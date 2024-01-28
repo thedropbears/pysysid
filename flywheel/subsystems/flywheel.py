@@ -5,9 +5,9 @@
 
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
-from wpilib.sysid import SysIdRoutineLog
+from wpilib import sysid
 
-
+from phoenix6 import SignalLogger
 from phoenix6.hardware import TalonFX
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
 from phoenix6.configs.config_groups import NeutralModeValue
@@ -42,18 +42,31 @@ class Flywheel(Subsystem):
         # Tell SysId to make generated commands require this subsystem, suffix test state in
         # WPILog with this subsystem's name ("drive")
         self.sys_id_routine = SysIdRoutine(
-            SysIdRoutine.Config(),
+            SysIdRoutine.Config(recordState=self.recordState),
             SysIdRoutine.Mechanism(drive, self.log, self),
         )
 
+        self.logger_inited = False
+
     # Tell SysId how to record a frame of data for each motor on the mechanism being
     # characterized.
-    def log(self, sys_id_routine: SysIdRoutineLog) -> None:
+    def log(self, sys_id_routine: sysid.SysIdRoutineLog) -> None:
         sys_id_routine.motor("flywheel").voltage(
             self.flywheel.get_motor_voltage().value
         ).position(self.flywheel.get_position().value).velocity(
             self.flywheel.get_velocity().value
         )
+
+    def recordState(self, state: sysid.State) -> None:
+        if not self.logger_inited:
+            SignalLogger.start()
+            self.logger_inited = True
+
+        SignalLogger.write_string(
+            f"sysid-test-state-{self.getName()}",
+            sysid.SysIdRoutineLog.stateEnumToString(state),
+        )
+        self.sys_id_routine.recordState(state)
 
     def defaultCommand(self) -> Command:
         return self.run(lambda: None)

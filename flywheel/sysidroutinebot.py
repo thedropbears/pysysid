@@ -60,4 +60,4 @@ class SysIdRoutineBot:
         """
 
         # Do nothing
-        return self.drive.run(lambda: None)
+        return self.flywheel.run(lambda: None)

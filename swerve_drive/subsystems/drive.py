@@ -84,7 +84,10 @@ class Drive(Subsystem):
             SignalLogger.start()
             self.logger_inited = True
 
-        SignalLogger.write_string(f"sysid-test-state-{self.getName()}", str(state))
+        SignalLogger.write_string(
+            f"sysid-test-state-{self.getName()}",
+            sysid.SysIdRoutineLog.stateEnumToString(state),
+        )
         self.sys_id_routine.recordState(state)
 
     def defaultCommand(self) -> Command:

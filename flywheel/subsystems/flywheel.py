@@ -10,7 +10,6 @@ from wpilib import sysid
 from phoenix6 import SignalLogger
 from phoenix6.hardware import TalonFX
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
-from phoenix6.configs.config_groups import NeutralModeValue
 from phoenix6.controls import VoltageOut
 from phoenix6.signals import NeutralModeValue
 

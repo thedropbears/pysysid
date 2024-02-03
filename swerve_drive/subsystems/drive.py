@@ -23,7 +23,7 @@ from constants import TalonIds
 class Drive(Subsystem):
     DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
     WHEEL_CIRCUMFERENCE = 4 * 2.54 / 100 * math.pi
-    
+
     DRIVE_MOTOR_REV_TO_METRES = WHEEL_CIRCUMFERENCE * DRIVE_GEAR_RATIO
 
     def __init__(self) -> None:

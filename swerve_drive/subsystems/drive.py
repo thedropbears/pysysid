@@ -23,6 +23,8 @@ from constants import TalonIds
 class Drive(Subsystem):
     DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
     WHEEL_CIRCUMFERENCE = 4 * 2.54 / 100 * math.pi
+    
+    DRIVE_MOTOR_REV_TO_METRES = WHEEL_CIRCUMFERENCE * DRIVE_GEAR_RATIO
 
     def __init__(self) -> None:
         # The motors on the left side of the drive
@@ -33,7 +35,7 @@ class Drive(Subsystem):
         self.drive_motors = [self.drive_1, self.drive_2, self.drive_3, self.drive_4]
         for drive_motor in self.drive_motors:
             drive_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
-                1 / self.DRIVE_GEAR_RATIO
+                1 / self.DRIVE_MOTOR_REV_TO_METRES
             )
             drive_config = drive_motor.configurator
             drive_config.apply(drive_gear_ratio_config)

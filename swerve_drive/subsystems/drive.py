@@ -11,11 +11,11 @@ from phoenix6 import SignalLogger
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, Slot0Configs
 from phoenix6.configs.config_groups import NeutralModeValue
 from phoenix6.controls import PositionVoltage, VoltageOut
-from phoenix6.hardware import TalonFX
+from phoenix6.hardware import CANcoder, TalonFX
 from wpilib import sysid
 from wpimath.units import volts
 
-from constants import TalonIds
+from constants import CancoderIds, TalonIds
 
 
 class Drive(Subsystem):
@@ -47,14 +47,27 @@ class Drive(Subsystem):
         self.steer_3 = TalonFX(TalonIds.steer_2)
         self.steer_4 = TalonFX(TalonIds.steer_4)
 
+        self.encoder_1 = CANcoder(CancoderIds.swerve_1)
+        self.encoder_2 = CANcoder(CancoderIds.swerve_2)
+        self.encoder_3 = CANcoder(CancoderIds.swerve_3)
+        self.encoder_4 = CANcoder(CancoderIds.swerve_4)
+
         self.steer_motors = [self.steer_1, self.steer_2, self.steer_3, self.steer_4]
-        for steer_motor in self.steer_motors:
+        self.steer_encoders = [
+            self.encoder_1,
+            self.encoder_2,
+            self.encoder_3,
+            self.encoder_4,
+        ]
+        for steer_motor, steer_encoder in zip(self.steer_motors, self.steer_encoders):
             steer_motor_config = MotorOutputConfigs()
             steer_motor_config.neutral_mode = NeutralModeValue.BRAKE
             steer_pid = Slot0Configs().with_k_p(211.73).with_k_i(0).with_k_d(27.368)
             steer_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
                 1 / self.STEER_GEAR_RATIO
             )
+
+            steer_motor.set_position(steer_encoder.get_absolute_position().value)
 
             steer_config = steer_motor.configurator
             steer_config.apply(steer_motor_config)

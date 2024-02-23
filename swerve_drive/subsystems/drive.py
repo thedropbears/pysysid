@@ -7,14 +7,15 @@ import math
 
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
-from constants import TalonIds
 from phoenix6 import SignalLogger
-from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
+from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, Slot0Configs
 from phoenix6.configs.config_groups import NeutralModeValue
-from phoenix6.controls import VoltageOut
+from phoenix6.controls import PositionVoltage, VoltageOut
 from phoenix6.hardware import TalonFX
 from wpilib import sysid
 from wpimath.units import volts
+
+from constants import TalonIds
 
 
 class Drive(Subsystem):
@@ -25,6 +26,7 @@ class Drive(Subsystem):
     WHEEL_CIRCUMFERENCE = 4 * 2.54 / 100 * math.pi
 
     DRIVE_MOTOR_REV_TO_METRES = WHEEL_CIRCUMFERENCE * DRIVE_GEAR_RATIO
+    STEER_MOTOR_REV_TO_RAD = math.tau * STEER_GEAR_RATIO
 
     def __init__(self) -> None:
         # The motors on the left side of the drive
@@ -49,11 +51,22 @@ class Drive(Subsystem):
         for steer_motor in self.steer_motors:
             steer_motor_config = MotorOutputConfigs()
             steer_motor_config.neutral_mode = NeutralModeValue.BRAKE
+            steer_pid = Slot0Configs().with_k_p(211.73).with_k_i(0).with_k_d(27.368)
+            steer_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
+                1 / self.STEER_GEAR_RATIO
+            )
+
             steer_config = steer_motor.configurator
             steer_config.apply(steer_motor_config)
+            steer_config.apply(steer_pid)
+            steer_config.apply(steer_gear_ratio_config)
 
         # Tell SysId how to plumb the driving voltage to the motors.
         def drive(voltage: volts) -> None:
+
+            steer_request = PositionVoltage(0.0)
+            for steer_motor in self.steer_motors:
+                steer_motor.set_control(steer_request)
             voltage_request = VoltageOut(voltage)
             for drive_motor in self.drive_motors:
                 drive_motor.set_control(voltage_request)

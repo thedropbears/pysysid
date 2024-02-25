@@ -3,33 +3,33 @@
 # the WPILib BSD license file in the root directory of this project.
 #
 
+import phoenix6
+
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
 from wpilib import sysid
 
 from phoenix6 import SignalLogger
-from phoenix6.hardware import TalonFX
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
 from phoenix6.controls import VoltageOut
 from phoenix6.signals import NeutralModeValue
 
 from wpimath.units import volts
 
-from constants import TalonIds
 
 
 class Flywheel(Subsystem):
-    FLYWHEEL_GEAR_RATIO = 24.0 / 18.0
-
-    def __init__(self) -> None:
-        self.flywheel = TalonFX(TalonIds.shooter_flywheel)
+    def __init__(
+        self,
+        flywheel_motor: phoenix6.hardware.TalonFX,
+        gearing: float,
+    ) -> None:
+        self.flywheel = flywheel_motor
 
         flywheel_config = self.flywheel.configurator
         flywheel_motor_config = MotorOutputConfigs()
         flywheel_motor_config.neutral_mode = NeutralModeValue.COAST
-        flywheel_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
-            self.FLYWHEEL_GEAR_RATIO
-        )
+        feedback_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(gearing)
         flywheel_config.apply(flywheel_motor_config)
         flywheel_config.apply(flywheel_gear_ratio_config)
 

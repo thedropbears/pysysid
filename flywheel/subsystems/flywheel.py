@@ -49,10 +49,11 @@ class Flywheel(Subsystem):
     # Tell SysId how to record a frame of data for each motor on the mechanism being
     # characterized.
     def log(self, sys_id_routine: sysid.SysIdRoutineLog) -> None:
-        sys_id_routine.motor("flywheel").voltage(
-            self.flywheel.get_motor_voltage().value
-        ).position(self.flywheel.get_position().value).velocity(
-            self.flywheel.get_velocity().value
+        (
+            sys_id_routine.motor("flywheel")
+            .voltage(self.flywheel.get_motor_voltage().value)
+            .position(self.flywheel.get_position().value)
+            .velocity(self.flywheel.get_velocity().value)
         )
 
     def recordState(self, state: sysid.State) -> None:

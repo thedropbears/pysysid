@@ -33,19 +33,18 @@ class Flywheel(Subsystem):
         flywheel_config.apply(flywheel_motor_config)
         flywheel_config.apply(flywheel_gear_ratio_config)
 
-        # Tell SysId how to plumb the driving voltage to the motors.
-        def drive(voltage: volts) -> None:
-            voltage_request = VoltageOut(voltage)
-            self.flywheel.set_control(voltage_request)
-
         # Tell SysId to make generated commands require this subsystem, suffix test state in
         # WPILog with this subsystem's name ("drive")
         self.sys_id_routine = SysIdRoutine(
             SysIdRoutine.Config(recordState=self.recordState),
-            SysIdRoutine.Mechanism(drive, self.log, self),
+            SysIdRoutine.Mechanism(self.drive, self.log, self),
         )
 
         self.logger_inited = False
+
+    # Tell SysId how to plumb the driving voltage to the motors.
+    def drive(self, voltage: volts) -> None:
+        self.flywheel.set_control(VoltageOut(voltage))
 
     # Tell SysId how to record a frame of data for each motor on the mechanism being
     # characterized.

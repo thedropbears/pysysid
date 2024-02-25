@@ -2,13 +2,14 @@
 # Open Source Software; you can modify and/or share it under the terms of
 # the WPILib BSD license file in the root directory of this project.
 
+import phoenix6
 from commands2 import Command
 from commands2.button import CommandXboxController
 from commands2.sysid import SysIdRoutine
 
 from subsystems.flywheel import Flywheel
 
-from constants import OIConstants
+from constants import OIConstants, TalonIds
 
 
 class SysIdRoutineBot:
@@ -20,7 +21,9 @@ class SysIdRoutineBot:
 
     def __init__(self) -> None:
         # The robot's subsystems
-        self.flywheel = Flywheel()
+        self.flywheel = Flywheel(
+            phoenix6.hardware.TalonFX(TalonIds.shooter_flywheel), gearing=24.0 / 18.0
+        )
 
         # The driver's controller
         self.controller = CommandXboxController(OIConstants.kDriverControllerPort)

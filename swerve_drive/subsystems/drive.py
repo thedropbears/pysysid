@@ -62,7 +62,7 @@ class Drive(Subsystem):
         for steer_motor, steer_encoder in zip(self.steer_motors, self.steer_encoders):
             steer_motor_config = MotorOutputConfigs()
             steer_motor_config.neutral_mode = NeutralModeValue.BRAKE
-            steer_pid = Slot0Configs().with_k_p(211.73).with_k_i(0).with_k_d(27.368)
+            steer_pid = Slot0Configs().with_k_p(4.1615).with_k_i(0).with_k_d(0.0021683)
             steer_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
                 1 / self.STEER_GEAR_RATIO
             )

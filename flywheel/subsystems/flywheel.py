@@ -23,8 +23,11 @@ class Flywheel(Subsystem):
         self,
         flywheel_motor: phoenix6.hardware.TalonFX,
         gearing: float,
+        name: str | None = None,
     ) -> None:
         self.flywheel = flywheel_motor
+        if name is not None:
+            self.setName(name)
 
         flywheel_config = self.flywheel.configurator
         flywheel_motor_config = MotorOutputConfigs()

@@ -23,8 +23,8 @@ class SysIdRoutineBot:
         # The robot's subsystems
         self.flywheel = Flywheel(
             phoenix6.hardware.TalonFX(TalonIds.shooter_flywheel_left),
-            phoenix6.hardware.TalonFX(TalonIds.shooter_flywheel_right),
-            gearing=24.0 / 18.0,
+            (phoenix6.hardware.TalonFX(TalonIds.shooter_flywheel_right), True),
+            gearing=22.0 / 18.0,
         )
 
         # The driver's controller

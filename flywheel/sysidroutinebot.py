@@ -24,7 +24,7 @@ class SysIdRoutineBot:
         self.flywheel = Flywheel(
             phoenix6.hardware.TalonFX(TalonIds.shooter_flywheel_left),
             (phoenix6.hardware.TalonFX(TalonIds.shooter_flywheel_right), True),
-            gearing=22.0 / 18.0,
+            gearing=1 / (22.0 / 18.0),
         )
 
         # The driver's controller

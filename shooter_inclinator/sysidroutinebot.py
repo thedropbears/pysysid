@@ -41,22 +41,22 @@ class SysIdRoutineBot:
         """
 
         # Control the drive with split-stick arcade controls
-        self.flywheel.setDefaultCommand(self.flywheel.defaultCommand())
+        self.inclinator.setDefaultCommand(self.inclinator.defaultCommand())
 
         # Bind full set of SysId routine tests to buttons; a complete routine should run each of these
         # once.
 
         self.controller.a().whileTrue(
-            self.flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
+            self.inclinator.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
         )
         self.controller.b().whileTrue(
-            self.flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+            self.inclinator.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
         )
         self.controller.x().whileTrue(
-            self.flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward)
+            self.inclinator.sysIdDynamic(SysIdRoutine.Direction.kForward)
         )
         self.controller.y().whileTrue(
-            self.flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse)
+            self.inclinator.sysIdDynamic(SysIdRoutine.Direction.kReverse)
         )
 
     def getAutonomousCommand(self) -> Command:
@@ -66,4 +66,4 @@ class SysIdRoutineBot:
         """
 
         # Do nothing
-        return self.flywheel.run(lambda: None)
+        return self.inclinator.run(lambda: None)

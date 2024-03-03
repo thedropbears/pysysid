@@ -84,6 +84,7 @@ dependencies = [
     "robotpy-navx==2024.1.0",
     "robotpy-rev~=2024.2.1",
     "robotpy-wpilib-utilities==2024.0.0",
+    "robotpy-commands-v2==2024.3.1",
     "photonlibpy==2024.2.6",
 ]
 

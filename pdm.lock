@@ -5,7 +5,7 @@
 groups = ["default", "dev", "typing"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:034eff500beedebf72967b2a4c3654721382a7ab188444b590dc445aa0e3307a"
+content_hash = "sha256:4cbae0feb999daec807c764c5767a336149b8874d690551762e1956b5255ba24"
 
 [[package]]
 name = "attrs"
@@ -551,6 +551,21 @@ groups = ["default"]
 files = [
     {file = "robotpy-cli-2024.0.0.tar.gz", hash = "sha256:e6519f06856eb0a7ef5f25a57bfc8dcb20635cef84706fb37c0b602d59e33f39"},
     {file = "robotpy_cli-2024.0.0-py3-none-any.whl", hash = "sha256:9284035fa67058b33593b1846e13501eda0861fb9d9adce4bd01b101c9f1f26e"},
+]
+
+[[package]]
+name = "robotpy-commands-v2"
+version = "2024.3.1"
+requires_python = ">=3.8"
+summary = "WPILib command framework v2"
+groups = ["default"]
+dependencies = [
+    "typing-extensions<5,>=4.1.0",
+    "wpilib<2025,>=2024.3.1",
+]
+files = [
+    {file = "robotpy-commands-v2-2024.3.1.tar.gz", hash = "sha256:bd7caf6060413d1b70bcedab665fb24ee2deed9169aeee611efb62a9dbf40852"},
+    {file = "robotpy_commands_v2-2024.3.1-py3-none-any.whl", hash = "sha256:94c2779a13c46c27f1454b170f01fb9c1c9e6a02d7b8fccaa86cd4e5c87d2435"},
 ]
 
 [[package]]

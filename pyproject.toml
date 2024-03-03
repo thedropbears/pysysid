@@ -67,9 +67,9 @@ dev = ["hypothesis", "pytest>=7.2.0", "pytest-integration>=0.2.3"]
 typing = ["mypy>=1.8.0"]
 
 [project]
-name = "pycrescendo"
+name = "pysysid"
 version = "0.0.0"
-description = "The Drop Bears' FRC 2024 robot code"
+description = "The Drop Bears' ongoing system identification code"
 authors = [{ name = "The Drop Bears", email = "enquiries@thedropbears.org.au" }]
 readme = "README.md"
 license = { text = "MIT" }

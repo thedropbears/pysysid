@@ -22,7 +22,7 @@ class SysIdRoutineBot:
 
     def __init__(self) -> None:
         # The robot's subsystems
-        self.flywheel = IntakeArm(
+        self.intake_arm = IntakeArm(
             CANSparkMax(SparkMaxIds.intake_deploy_l, CANSparkMax.MotorType.kBrushless),
             (
                 CANSparkMax(
@@ -45,22 +45,22 @@ class SysIdRoutineBot:
         """
 
         # Control the drive with split-stick arcade controls
-        self.flywheel.setDefaultCommand(self.flywheel.defaultCommand())
+        self.intake_arm.setDefaultCommand(self.intake_arm.defaultCommand())
 
         # Bind full set of SysId routine tests to buttons; a complete routine should run each of these
         # once.
 
         self.controller.a().whileTrue(
-            self.flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
+            self.intake_arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
         )
         self.controller.b().whileTrue(
-            self.flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+            self.intake_arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
         )
         self.controller.x().whileTrue(
-            self.flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward)
+            self.intake_arm.sysIdDynamic(SysIdRoutine.Direction.kForward)
         )
         self.controller.y().whileTrue(
-            self.flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse)
+            self.intake_arm.sysIdDynamic(SysIdRoutine.Direction.kReverse)
         )
 
     def getAutonomousCommand(self) -> Command:
@@ -70,4 +70,4 @@ class SysIdRoutineBot:
         """
 
         # Do nothing
-        return self.flywheel.run(lambda: None)
+        return self.intake_arm.run(lambda: None)

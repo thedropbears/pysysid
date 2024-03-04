@@ -16,11 +16,6 @@ warn_unused_ignores = true
 warn_unreachable = true
 strict_equality = true
 
-[[tool.mypy.overrides]]
-module = "photonlibpy.*"
-# https://github.com/PhotonVision/photonvision/issues/1210
-ignore_missing_imports = true
-
 [tool.pytest.ini_options]
 addopts = "--strict-markers -v --maxfail=2"
 pythonpath = "."
@@ -76,26 +71,24 @@ license = { text = "MIT" }
 requires-python = ">=3.10,<3.13"
 
 dependencies = [
-    "numpy~=1.25",
     "phoenix6~=24.2.0",
-    # robotpy[apriltag] pins numpy to a version that doesn't build cleanly on Python 3.12.
     "robotpy==2024.3.1.0",
-    "robotpy-apriltag~=2024.3.1",
-    "robotpy-navx==2024.1.0",
+    "robotpy-commands-v2~=2024.3.1",
+    "robotpy-navx~=2024.1.0",
     "robotpy-rev~=2024.2.1",
-    "robotpy-wpilib-utilities==2024.0.0",
-    "robotpy-commands-v2==2024.3.1",
-    "photonlibpy==2024.2.6",
+    "robotpy-urcl~=2024.0.1",
 ]
 
 [tool.robotpy]
 requires = [
-    "numpy~=1.25",
     "phoenix6~=24.2.0",
-    "robotpy-navx==2024.1.0",
+    "robotpy-commands-v2~=2023.3.1",
+    "robotpy-navx~=2024.1.0",
     "robotpy-rev~=2024.2.1",
-    "robotpy-wpilib-utilities==2024.0.0",
-    "photonlibpy==2024.2.6",
+    "robotpy-urcl~=2024.0.1",
+    # Not needed for these routines, but keep them on the robot for production.
+    "numpy",
+    "photonlibpy",
 ]
 robotpy_version = "2024.3.1.0"
 robotpy_extras = ["apriltag"]

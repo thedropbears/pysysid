@@ -5,7 +5,7 @@
 groups = ["default", "dev", "typing"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.2"
-content_hash = "sha256:1e5a99fc1ee4d972227c751ff3a8abd42286f89ae84bd166ace9e22038798e93"
+content_hash = "sha256:15730a6638aa0f33bc56a9b9291aab223b676fd9aa6c2a42a0187e1a52dd0727"
 
 [[package]]
 name = "attrs"
@@ -609,7 +609,7 @@ files = [
 
 [[package]]
 name = "robotpy-urcl"
-version = "2024.0.1"
+version = "2024.1.0"
 requires_python = ">=3.8"
 summary = "Python wrapper for FRC Team 6328's URCL library"
 groups = ["default"]
@@ -620,16 +620,16 @@ dependencies = [
     "wpilib<2025.0.0,>=2024.1.1",
 ]
 files = [
-    {file = "robotpy-urcl-2024.0.1.tar.gz", hash = "sha256:a9db0b9a8ae58a0d23857a1c257317aaba21a4b778e28bbc997ff35276f6808d"},
-    {file = "robotpy_urcl-2024.0.1-cp310-cp310-macosx_10_16_x86_64.whl", hash = "sha256:92ec7fec422b9b69d02c16323c875fc6c131324544a2043663917043b825ba91"},
-    {file = "robotpy_urcl-2024.0.1-cp310-cp310-manylinux_2_35_x86_64.whl", hash = "sha256:0b83dc8bef3443dcb768fba147aa10163edd017185016898ebcf0c04f58c0472"},
-    {file = "robotpy_urcl-2024.0.1-cp310-cp310-win_amd64.whl", hash = "sha256:c0aaac49480cdee0e2e57c0a70b56f9ffebd6873d596845afa271241ba9eaa62"},
-    {file = "robotpy_urcl-2024.0.1-cp311-cp311-macosx_11_0_universal2.whl", hash = "sha256:c15d497b02357ff66528635014a1cd60b2de14e4b8f283123f0737c56df4c774"},
-    {file = "robotpy_urcl-2024.0.1-cp311-cp311-manylinux_2_35_x86_64.whl", hash = "sha256:b666756683e1b0254e29d8226ebb544ac6f8585b405d23648237c05995f71cc3"},
-    {file = "robotpy_urcl-2024.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:c6de08b22fadf8778512d33a2972af1af26727a4a4583bf25c76de83c78ddf91"},
-    {file = "robotpy_urcl-2024.0.1-cp312-cp312-macosx_11_0_universal2.whl", hash = "sha256:2d8ffe68e7f1ba80266b503313586b384e2ece1d8125fb3529224867118edeb1"},
-    {file = "robotpy_urcl-2024.0.1-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:e4c7d2a5c5a3ee6e7e0b4801898acc77bcf25a0b56f10f6d9d4650a2bef07087"},
-    {file = "robotpy_urcl-2024.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:f95201ac02ee55f98cb31e885b99bc467dfa8c4a86c7b5a51bb2144e92af1f20"},
+    {file = "robotpy-urcl-2024.1.0.tar.gz", hash = "sha256:ec19911e1770c431da30b4b6076239b1e2945d5f64c5493db071ba59f589ded9"},
+    {file = "robotpy_urcl-2024.1.0-cp310-cp310-macosx_10_16_x86_64.whl", hash = "sha256:a3884483110ded9899ec2d03ac77c1b7913ab673beff1b5a3cc5390a36b6bc70"},
+    {file = "robotpy_urcl-2024.1.0-cp310-cp310-manylinux_2_35_x86_64.whl", hash = "sha256:01d58e96272282ce1d3536d8828de9b441dc5ad6bb54cf91173b4cba05bcc6c2"},
+    {file = "robotpy_urcl-2024.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:4f7516caf916866abb05363366dc988af8c19f9001811d656835531ef25cae7f"},
+    {file = "robotpy_urcl-2024.1.0-cp311-cp311-macosx_11_0_universal2.whl", hash = "sha256:9b50a2747324906f080d33c6f088c302b27b01a01a06af10a5c12c135794ee4d"},
+    {file = "robotpy_urcl-2024.1.0-cp311-cp311-manylinux_2_35_x86_64.whl", hash = "sha256:8ebf0c4068ef4cc9aa5a9e1137694c54c091cae13894ed88c18be76044176980"},
+    {file = "robotpy_urcl-2024.1.0-cp311-cp311-win_amd64.whl", hash = "sha256:74053de5475eafb5fa5f1c2ccce1f1cc728b903810921b9871cea74751fae40e"},
+    {file = "robotpy_urcl-2024.1.0-cp312-cp312-macosx_11_0_universal2.whl", hash = "sha256:c328f67d15081da220c69643e31088710c0e4f354f299bb32745cfc4e0598850"},
+    {file = "robotpy_urcl-2024.1.0-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:eb59bf5c76eb06a2589981b23ac2def1e423173e51d440032dde2d9947df5183"},
+    {file = "robotpy_urcl-2024.1.0-cp312-cp312-win_amd64.whl", hash = "sha256:e3e1ceb7460c1d05263b9a217602516d2a1c7063fda0f55dce2df2173fd706a1"},
 ]
 
 [[package]]

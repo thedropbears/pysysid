@@ -10,21 +10,23 @@ from commands2.sysid import SysIdRoutine
 from wpilib import sysid
 
 from phoenix6 import SignalLogger
-from phoenix6.hardware import TalonFX
-from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
+from phoenix6.hardware import TalonFX, CANcoder
+from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, Slot0Configs
 from phoenix6.configs.config_groups import NeutralModeValue
-from phoenix6.controls import VoltageOut
+from phoenix6.controls import VoltageOut, PositionVoltage
 
 from wpimath.units import volts
 
-from constants import TalonIds
+from constants import TalonIds, CancoderIds
 
 
 class Drive(Subsystem):
     DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
+    STEER_GEAR_RATIO = (14 / 50) * (10 / 60)
     WHEEL_CIRCUMFERENCE = 4 * 2.54 / 100 * math.pi
 
     DRIVE_MOTOR_REV_TO_METRES = WHEEL_CIRCUMFERENCE * DRIVE_GEAR_RATIO
+    STEER_MOTOR_REV_TO_RAD = math.tau * STEER_GEAR_RATIO
 
     def __init__(self) -> None:
         # The motors on the left side of the drive
@@ -45,15 +47,39 @@ class Drive(Subsystem):
         self.steer_3 = TalonFX(TalonIds.steer_2)
         self.steer_4 = TalonFX(TalonIds.steer_4)
 
+        self.encoder_1 = CANcoder(CancoderIds.swerve_1)
+        self.encoder_2 = CANcoder(CancoderIds.swerve_2)
+        self.encoder_3 = CANcoder(CancoderIds.swerve_3)
+        self.encoder_4 = CANcoder(CancoderIds.swerve_4)
+
         self.steer_motors = [self.steer_1, self.steer_2, self.steer_3, self.steer_4]
-        for steer_motor in self.steer_motors:
+        self.steer_encoders = [
+            self.encoder_1,
+            self.encoder_2,
+            self.encoder_3,
+            self.encoder_4,
+        ]
+        for steer_motor, steer_encoder in zip(self.steer_motors, self.steer_encoders):
             steer_motor_config = MotorOutputConfigs()
             steer_motor_config.neutral_mode = NeutralModeValue.BRAKE
+            steer_pid = Slot0Configs().with_k_p(4.1615).with_k_i(0).with_k_d(0.0021683)
+            steer_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
+                1 / self.STEER_GEAR_RATIO
+            )
+
+            steer_motor.set_position(steer_encoder.get_absolute_position().value)
+
             steer_config = steer_motor.configurator
             steer_config.apply(steer_motor_config)
+            steer_config.apply(steer_pid)
+            steer_config.apply(steer_gear_ratio_config)
 
         # Tell SysId how to plumb the driving voltage to the motors.
         def drive(voltage: volts) -> None:
+
+            steer_request = PositionVoltage(0.0)
+            for steer_motor in self.steer_motors:
+                steer_motor.set_control(steer_request)
             voltage_request = VoltageOut(voltage)
             for drive_motor in self.drive_motors:
                 drive_motor.set_control(voltage_request)

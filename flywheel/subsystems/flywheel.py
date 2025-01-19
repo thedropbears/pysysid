@@ -4,18 +4,14 @@
 #
 
 import phoenix6
-
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
-from wpilib import sysid
-
 from phoenix6 import SignalLogger
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
 from phoenix6.controls import Follower, VoltageOut
 from phoenix6.signals import NeutralModeValue
-
+from wpilib import sysid
 from wpimath.units import volts
-
 
 FollowerDescriptor = tuple[phoenix6.hardware.TalonFX, bool]
 

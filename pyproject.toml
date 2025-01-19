@@ -1,5 +1,6 @@
 [tool.coverage.run]
 branch = true
+omit = ["config.py", "config-3.py"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -16,6 +17,19 @@ warn_unused_ignores = true
 warn_unreachable = true
 strict_equality = true
 
+[[tool.mypy.overrides]]
+module = "choreo.*"
+ignore_missing_imports = true
+
+[tool.pyright]
+exclude = [
+    "ctre_sim",
+    "logs",
+    # Default excludes
+    "**/__pycache__",
+    "**/.*",
+]
+
 [tool.pytest.ini_options]
 addopts = "--strict-markers -v --maxfail=2"
 pythonpath = "."
@@ -23,7 +37,7 @@ testpaths = ["tests"]
 xfail_strict = true
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = [
@@ -33,6 +47,8 @@ select = [
     "F",
     # flake8-bugbear
     "B",
+    # isort
+    "I",
     # pyupgrade
     "UP",
     # flake8-comprehensions
@@ -46,20 +62,19 @@ select = [
     # perflint
     "PERF",
 ]
-ignore = ["E501"]
+ignore = [
+    "E501", # long lines
+    "B905", # zip() without strict=
+]
 
-[tool.pdm]
-package-type = "application"
-
-[tool.pdm.scripts]
-deploy = "robotpy --main {args}/robot.py deploy"
-download = "robotpy sync --no-install"
-sim = "robotpy --main {args}/robot.py sim"
-test = "robotpy --main {args}/robot.py test --"
-
-[tool.pdm.dev-dependencies]
-dev = ["hypothesis", "pytest>=7.2.0", "pytest-integration>=0.2.3"]
-typing = ["mypy>=1.8.0"]
+[tool.uv]
+dev-dependencies = [
+    "hypothesis>=6.112.1",
+    "mypy>=1.8.0",
+    "pytest>=7.2.0",
+    "pytest-integration>=0.2.3",
+]
+prerelease = "allow"
 
 [project]
 name = "pysysid"
@@ -68,27 +83,24 @@ description = "The Drop Bears' ongoing system identification code"
 authors = [{ name = "The Drop Bears", email = "enquiries@thedropbears.org.au" }]
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.12,<3.14"
 
 dependencies = [
-    "phoenix6~=24.2.0",
-    "robotpy==2024.3.1.0",
-    "robotpy-commands-v2~=2024.3.1",
-    "robotpy-navx~=2024.1.0",
-    "robotpy-rev~=2024.2.1",
-    "robotpy-urcl~=2024.0.1",
+    "phoenix6~=25.1.0",
+    "robotpy==2025.2.1.0",
+    "robotpy-commands-v2~=2025.1.1",
+    "robotpy-rev~=2025.0.1",
+    "robotpy-urcl~=2025.0.0",
 ]
 
 [tool.robotpy]
 requires = [
-    "phoenix6~=24.2.0",
-    "robotpy-commands-v2~=2023.3.1",
-    "robotpy-navx~=2024.1.0",
-    "robotpy-rev~=2024.2.1",
-    "robotpy-urcl~=2024.0.1",
+    "phoenix6~=25.1.0",
+    "robotpy-commands-v2~=2025.1.1",
+    "robotpy-rev~=2025.0.1",
+    "robotpy-urcl~=2025.0.0",
     # Not needed for these routines, but keep them on the robot for production.
     "numpy",
     "photonlibpy",
 ]
-robotpy_version = "2024.3.1.0"
-robotpy_extras = ["apriltag"]
+robotpy_version = "2025.2.1.0"

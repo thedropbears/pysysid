@@ -7,21 +7,21 @@ import math
 
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
-from wpilib import sysid
-
+from constants import TalonIds
 from phoenix6 import SignalLogger
-from phoenix6.hardware import TalonFX
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
 from phoenix6.configs.config_groups import NeutralModeValue
 from phoenix6.controls import VoltageOut
-
+from phoenix6.hardware import TalonFX
+from wpilib import sysid
 from wpimath.units import volts
-
-from constants import TalonIds
 
 
 class Drive(Subsystem):
-    DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
+    L1_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
+    L2_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0)
+
+    DRIVE_GEAR_RATIO = L1_DRIVE_GEAR_RATIO
     WHEEL_CIRCUMFERENCE = 4 * 2.54 / 100 * math.pi
 
     DRIVE_MOTOR_REV_TO_METRES = WHEEL_CIRCUMFERENCE * DRIVE_GEAR_RATIO

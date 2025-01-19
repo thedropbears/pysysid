@@ -6,10 +6,8 @@ import phoenix6
 from commands2 import Command
 from commands2.button import CommandXboxController
 from commands2.sysid import SysIdRoutine
-
-from subsystems.flywheel import Flywheel
-
 from constants import OIConstants, TalonIds
+from subsystems.flywheel import Flywheel
 
 
 class SysIdRoutineBot:

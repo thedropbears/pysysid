@@ -21,5 +21,13 @@ class TalonIds(enum.IntEnum):
     steer_4 = 8
 
 
+@enum.unique
+class CancoderIds(enum.IntEnum):
+    swerve_1 = 1
+    swerve_2 = 2
+    swerve_3 = 3
+    swerve_4 = 4
+
+
 class OIConstants:
     kDriverControllerPort = 0

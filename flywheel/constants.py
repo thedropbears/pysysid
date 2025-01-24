@@ -8,7 +8,7 @@ import enum
 
 @enum.unique
 class TalonIds(enum.IntEnum):
-    shooter_flywheel = 9
+    steer_module = 5
 
 
 class OIConstants:

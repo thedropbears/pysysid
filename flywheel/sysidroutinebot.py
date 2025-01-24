@@ -6,6 +6,7 @@ import phoenix6
 from commands2 import Command
 from commands2.button import CommandXboxController
 from commands2.sysid import SysIdRoutine
+
 from constants import OIConstants, TalonIds
 from subsystems.flywheel import Flywheel
 
@@ -20,7 +21,8 @@ class SysIdRoutineBot:
     def __init__(self) -> None:
         # The robot's subsystems
         self.flywheel = Flywheel(
-            phoenix6.hardware.TalonFX(TalonIds.shooter_flywheel), gearing=24.0 / 18.0
+            phoenix6.hardware.TalonFX(TalonIds.steer_module),
+            gearing=1 / ((14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)),
         )
 
         # The driver's controller

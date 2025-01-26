@@ -1,7 +1,6 @@
 import math
 
 import rev
-
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
 from wpilib import sysid
@@ -10,25 +9,26 @@ from wpilib import sysid
 class Arm(Subsystem):
     def __init__(
         self,
-        motor: rev.CANSparkBase,
-        follower: rev.CANSparkBase,
+        motor: rev.SparkMax,
+        follower: rev.SparkMax,
         *,
         oppose_leader: bool,
         gearing: float,
         name: str | None = None,
     ) -> None:
         self.motor = motor
-        self.encoder = self._init_encoder(self.motor, gearing)
+        config = self._create_smax_config(gearing)
+        self._configure_ephemeral(motor, config)
+        self.encoder = motor.getEncoder()
         if name is not None:
             self.setName(name)
 
-        self.motor.setIdleMode(rev.CANSparkBase.IdleMode.kBrake)
         if True:
             self.follower = follower
-            self.follower_encoder = self._init_encoder(follower, gearing)
-            follower.setIdleMode(rev.CANSparkBase.IdleMode.kBrake)
-            # follower.setInverted(oppose_leader)
-            follower.follow(self.motor, invert=oppose_leader)
+            self.follower_encoder = follower.getEncoder()
+            follower_config = self._create_smax_config(gearing)
+            follower_config.follow(motor, invert=oppose_leader)
+            self._configure_ephemeral(follower, follower_config)
 
         # Tell SysId to make generated commands require this subsystem, suffix test state in
         # WPILog with this subsystem's name ("drive")
@@ -37,17 +37,25 @@ class Arm(Subsystem):
             SysIdRoutine.Mechanism(self.motor.setVoltage, self.log, self),
         )
 
-    def _init_encoder(
-        self, motor: rev.CANSparkBase, gearing: float
-    ) -> rev.SparkRelativeEncoder:
-        encoder = motor.getEncoder()
+    @classmethod
+    def _create_smax_config(cls, gearing: float) -> rev.SparkMaxConfig:
+        config = rev.SparkMaxConfig()
+        config.setIdleMode(rev.SparkBaseConfig.IdleMode.kBrake)
 
         # Measure position in rad and velocity in rad/s.
         output_rad_per_motor_rev = gearing * math.tau
-        encoder.setPositionConversionFactor(output_rad_per_motor_rev)
-        encoder.setVelocityConversionFactor(output_rad_per_motor_rev / 60)
+        config.encoder.positionConversionFactor(output_rad_per_motor_rev)
+        config.encoder.velocityConversionFactor(output_rad_per_motor_rev / 60)
 
-        return encoder
+        return config
+
+    @classmethod
+    def _configure_ephemeral(cls, motor: rev.SparkBase, config: rev.SparkBaseConfig):
+        motor.configure(
+            config,
+            rev.SparkBase.ResetMode.kNoResetSafeParameters,
+            rev.SparkBase.PersistMode.kNoPersistParameters,
+        )
 
     # Tell SysId how to record a frame of data for each motor on the mechanism being
     # characterized.

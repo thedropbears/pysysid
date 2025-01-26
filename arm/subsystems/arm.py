@@ -86,6 +86,13 @@ class Arm(Subsystem):
                 .velocity(self.follower_encoder.getVelocity())
             )
 
+
+    def below_upper_limit(self) -> bool:
+        return self.encoder.getPosition() < self.upper_limit
+    
+    def above_lower_limit(self) -> bool:
+        return self.encoder.getPosition() > self.lower_limit
+
     def defaultCommand(self) -> Command:
         return self.run(lambda: None)
 

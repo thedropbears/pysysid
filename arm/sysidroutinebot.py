@@ -46,23 +46,20 @@ class SysIdRoutineBot:
         # Control the drive with split-stick arcade controls
         self.arm.setDefaultCommand(self.arm.defaultCommand())
 
-        def within_limits() -> bool:
-            return self.arm.lower_limit < self.arm.encoder.getPosition() < self.arm.upper_limit
-
         # Bind full set of SysId routine tests to buttons; a complete routine should run each of these
         # once.
 
         self.controller.a().whileTrue(
-            self.arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward).onlyWhile(within_limits)
+            self.arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward).onlyWhile(self.arm.below_upper_limit)
         )
         self.controller.b().whileTrue(
-            self.arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).onlyWhile(within_limits)
+            self.arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).onlyWhile(self.arm.above_lower_limit)
         )
         self.controller.x().whileTrue(
-            self.arm.sysIdDynamic(SysIdRoutine.Direction.kForward).onlyWhile(within_limits)
+            self.arm.sysIdDynamic(SysIdRoutine.Direction.kForward).onlyWhile(self.arm.below_upper_limit)
         )
         self.controller.y().whileTrue(
-            self.arm.sysIdDynamic(SysIdRoutine.Direction.kReverse).onlyWhile(within_limits)
+            self.arm.sysIdDynamic(SysIdRoutine.Direction.kReverse).onlyWhile(self.arm.above_lower_limit)
         )
 
     def getAutonomousCommand(self) -> Command:

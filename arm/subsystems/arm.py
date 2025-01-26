@@ -10,7 +10,7 @@ class Arm(Subsystem):
     def __init__(
         self,
         motor: rev.SparkMax,
-        follower: rev.SparkMax,
+        follower: rev.SparkMax | None,
         *,
         oppose_leader: bool,
         gearing: float,
@@ -28,7 +28,7 @@ class Arm(Subsystem):
         if name is not None:
             self.setName(name)
 
-        if follower:
+        if follower is not None:
             self.follower = follower
             self.follower_encoder = follower.getEncoder()
             follower_config = self._create_smax_config(gearing, upper_limit, lower_limit, motor_inverted)
@@ -76,7 +76,7 @@ class Arm(Subsystem):
             .position(self.encoder.getPosition())
             .velocity(self.encoder.getVelocity())
         )
-        if self.follower:
+        if self.follower is not None:
             (
                 sys_id_routine.motor("follower")
                 .voltage(self.follower.get() * self.follower.getBusVoltage())

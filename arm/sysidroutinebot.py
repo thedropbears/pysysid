@@ -19,9 +19,9 @@ class SysIdRoutineBot:
         # The robot's subsystems
         self.arm = Arm(
             self._create_neo(SparkId.intake_deploy_leader),
-            self._create_neo(SparkId.intake_deploy_follower),
+            None,
             oppose_leader=True,
-            gearing=(1 / 5) * (1 / 3) * (24 / 72),
+            gearing=(150.0 / 15) * 20,
             upper_limit=0,
             lower_limit=0,
             motor_inverted=True

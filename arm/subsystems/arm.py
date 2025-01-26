@@ -16,10 +16,11 @@ class Arm(Subsystem):
         gearing: float,
         lower_limit: float,
         upper_limit: float,
+        motor_inverted: bool,
         name: str | None = None,
     ) -> None:
         self.motor = motor
-        config = self._create_smax_config(gearing, upper_limit, lower_limit)
+        config = self._create_smax_config(gearing, upper_limit, lower_limit, motor_inverted)
         self._configure_ephemeral(motor, config)
         self.encoder = motor.getEncoder()
         self.upper_limit = upper_limit
@@ -30,7 +31,7 @@ class Arm(Subsystem):
         if follower:
             self.follower = follower
             self.follower_encoder = follower.getEncoder()
-            follower_config = self._create_smax_config(gearing, upper_limit, lower_limit)
+            follower_config = self._create_smax_config(gearing, upper_limit, lower_limit, motor_inverted)
             follower_config.follow(motor, invert=oppose_leader)
             self._configure_ephemeral(follower, follower_config)
 
@@ -42,13 +43,14 @@ class Arm(Subsystem):
         )
 
     @classmethod
-    def _create_smax_config(cls, gearing: float, upper_limit: float, lower_limit: float) -> rev.SparkMaxConfig:
+    def _create_smax_config(cls, gearing: float, upper_limit: float, lower_limit: float, inverted: bool) -> rev.SparkMaxConfig:
         config = rev.SparkMaxConfig()
         config.setIdleMode(rev.SparkBaseConfig.IdleMode.kBrake)
         config.softLimit.reverseSoftLimitEnabled(True)
         config.softLimit.reverseSoftLimit(lower_limit)
         config.softLimit.forwardSoftLimitEnabled(True)
         config.softLimit.forwardSoftLimit(upper_limit)
+        config.inverted(inverted)
         
         # Measure position in rad and velocity in rad/s.
         output_rad_per_motor_rev = gearing * math.tau

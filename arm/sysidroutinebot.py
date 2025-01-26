@@ -23,7 +23,8 @@ class SysIdRoutineBot:
             oppose_leader=True,
             gearing=(1 / 5) * (1 / 3) * (24 / 72),
             upper_limit=0,
-            lower_limit=0
+            lower_limit=0,
+            motor_inverted=True
         )
 
         # The driver's controller

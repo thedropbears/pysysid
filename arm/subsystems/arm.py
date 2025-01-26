@@ -28,17 +28,19 @@ class Arm(Subsystem):
         if name is not None:
             self.setName(name)
 
-        if follower is not None:
-            self.follower = follower
-            self.follower_encoder = follower.getEncoder()
+        self.follower = follower
+
+        if self.follower is not None:
+            
+            self.follower_encoder = self.follower.getEncoder()
             follower_config = self._create_smax_config(gearing, upper_limit, lower_limit, motor_inverted)
             follower_config.follow(motor, invert=oppose_leader)
-            self._configure_ephemeral(follower, follower_config)
+            self._configure_ephemeral(self.follower, follower_config)
 
         # Tell SysId to make generated commands require this subsystem, suffix test state in
         # WPILog with this subsystem's name ("drive")
         self.sys_id_routine = SysIdRoutine(
-            SysIdRoutine.Config(),
+            SysIdRoutine.Config(rampRate=1.5, stepVoltage=3),
             SysIdRoutine.Mechanism(self.motor.setVoltage, self.log, self),
         )
 
@@ -53,7 +55,7 @@ class Arm(Subsystem):
         config.inverted(inverted)
         
         # Measure position in rad and velocity in rad/s.
-        output_rad_per_motor_rev = gearing * math.tau
+        output_rad_per_motor_rev = (1/gearing) * math.tau
         config.encoder.positionConversionFactor(output_rad_per_motor_rev)
         config.encoder.velocityConversionFactor(output_rad_per_motor_rev / 60)
 

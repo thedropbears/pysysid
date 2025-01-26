@@ -21,10 +21,10 @@ class SysIdRoutineBot:
             self._create_neo(SparkId.wrist_motor),
             None,
             oppose_leader=True,
-            gearing=(150.0 / 15) * 20,
+            gearing=(150.0 / 15) * 20 * (50 / 26),
             upper_limit=math.radians(-10.0),
             lower_limit=math.radians(-113.0),
-            motor_inverted=True
+            motor_inverted=False
         )
 
         # The driver's controller

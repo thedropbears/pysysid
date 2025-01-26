@@ -1,4 +1,5 @@
 import rev
+import math
 from commands2 import Command
 from commands2.button import CommandXboxController
 from commands2.sysid import SysIdRoutine
@@ -6,7 +7,6 @@ from commands2.sysid import SysIdRoutine
 from subsystems.arm import Arm
 
 from constants import OIConstants, SparkId
-
 
 class SysIdRoutineBot:
     """This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,8 +22,8 @@ class SysIdRoutineBot:
             None,
             oppose_leader=True,
             gearing=(150.0 / 15) * 20,
-            upper_limit=0,
-            lower_limit=0,
+            upper_limit=math.radians(-10.0),
+            lower_limit=math.radians(-113.0),
             motor_inverted=True
         )
 

@@ -22,14 +22,16 @@ class SysIdRoutineBot:
             self._create_neo(SparkId.intake_deploy_follower),
             oppose_leader=True,
             gearing=(1 / 5) * (1 / 3) * (24 / 72),
+            upper_limit=0,
+            lower_limit=0
         )
 
         # The driver's controller
         self.controller = CommandXboxController(OIConstants.kDriverControllerPort)
 
     @staticmethod
-    def _create_neo(id: int) -> rev.CANSparkMax:
-        return rev.CANSparkMax(id, rev.CANSparkMax.MotorType.kBrushless)
+    def _create_neo(id: int) -> rev.SparkMax:
+        return rev.SparkMax(id, rev.SparkMax.MotorType.kBrushless)
 
     def configureBindings(self) -> None:
         """Use this method to define bindings between conditions and commands. These are useful for
@@ -43,20 +45,23 @@ class SysIdRoutineBot:
         # Control the drive with split-stick arcade controls
         self.arm.setDefaultCommand(self.arm.defaultCommand())
 
+        def within_limits() -> bool:
+            return self.arm.lower_limit < self.arm.encoder.getPosition() < self.arm.upper_limit
+
         # Bind full set of SysId routine tests to buttons; a complete routine should run each of these
         # once.
 
         self.controller.a().whileTrue(
-            self.arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
+            self.arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward).onlyWhile(within_limits)
         )
         self.controller.b().whileTrue(
-            self.arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+            self.arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).onlyWhile(within_limits)
         )
         self.controller.x().whileTrue(
-            self.arm.sysIdDynamic(SysIdRoutine.Direction.kForward)
+            self.arm.sysIdDynamic(SysIdRoutine.Direction.kForward).onlyWhile(within_limits)
         )
         self.controller.y().whileTrue(
-            self.arm.sysIdDynamic(SysIdRoutine.Direction.kReverse)
+            self.arm.sysIdDynamic(SysIdRoutine.Direction.kReverse).onlyWhile(within_limits)
         )
 
     def getAutonomousCommand(self) -> Command:

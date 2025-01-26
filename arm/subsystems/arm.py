@@ -14,19 +14,23 @@ class Arm(Subsystem):
         *,
         oppose_leader: bool,
         gearing: float,
+        lower_limit: float,
+        upper_limit: float,
         name: str | None = None,
     ) -> None:
         self.motor = motor
-        config = self._create_smax_config(gearing)
+        config = self._create_smax_config(gearing, upper_limit, lower_limit)
         self._configure_ephemeral(motor, config)
         self.encoder = motor.getEncoder()
+        self.upper_limit = upper_limit
+        self.lower_limit = lower_limit
         if name is not None:
             self.setName(name)
 
-        if True:
+        if follower:
             self.follower = follower
             self.follower_encoder = follower.getEncoder()
-            follower_config = self._create_smax_config(gearing)
+            follower_config = self._create_smax_config(gearing, upper_limit, lower_limit)
             follower_config.follow(motor, invert=oppose_leader)
             self._configure_ephemeral(follower, follower_config)
 
@@ -38,10 +42,14 @@ class Arm(Subsystem):
         )
 
     @classmethod
-    def _create_smax_config(cls, gearing: float) -> rev.SparkMaxConfig:
+    def _create_smax_config(cls, gearing: float, upper_limit: float, lower_limit: float) -> rev.SparkMaxConfig:
         config = rev.SparkMaxConfig()
         config.setIdleMode(rev.SparkBaseConfig.IdleMode.kBrake)
-
+        config.softLimit.reverseSoftLimitEnabled(True)
+        config.softLimit.reverseSoftLimit(lower_limit)
+        config.softLimit.forwardSoftLimitEnabled(True)
+        config.softLimit.forwardSoftLimit(upper_limit)
+        
         # Measure position in rad and velocity in rad/s.
         output_rad_per_motor_rev = gearing * math.tau
         config.encoder.positionConversionFactor(output_rad_per_motor_rev)
@@ -66,7 +74,7 @@ class Arm(Subsystem):
             .position(self.encoder.getPosition())
             .velocity(self.encoder.getVelocity())
         )
-        if True:
+        if self.follower:
             (
                 sys_id_routine.motor("follower")
                 .voltage(self.follower.get() * self.follower.getBusVoltage())

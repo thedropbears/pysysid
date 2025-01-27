@@ -40,7 +40,7 @@ class Arm(Subsystem):
         # Tell SysId to make generated commands require this subsystem, suffix test state in
         # WPILog with this subsystem's name ("drive")
         self.sys_id_routine = SysIdRoutine(
-            SysIdRoutine.Config(rampRate=1.5, stepVoltage=3),
+            SysIdRoutine.Config(rampRate=3, stepVoltage=7),
             SysIdRoutine.Mechanism(self.motor.setVoltage, self.log, self),
         )
 

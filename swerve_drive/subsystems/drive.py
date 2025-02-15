@@ -107,7 +107,7 @@ class Drive(Subsystem):
         # Tell SysId to make generated commands require this subsystem, suffix test state in
         # WPILog with this subsystem's name ("drive")
         self.sys_id_routine = SysIdRoutine(
-            SysIdRoutine.Config(recordState=self.recordState),
+            SysIdRoutine.Config(recordState=self.recordState, stepVoltage=1.0),
             SysIdRoutine.Mechanism(drive, self.log, self),
         )
 

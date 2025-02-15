@@ -64,15 +64,25 @@ class Drive(Subsystem):
         for steer_motor, steer_encoder in zip(self.steer_motors, self.steer_encoders):
             steer_motor_config = MotorOutputConfigs()
             steer_motor_config.neutral_mode = NeutralModeValue.BRAKE
+            # default to L1 ratio with falcons and then override if we are on l2 with kraken
             steer_pid = (
                 Slot0Configs()
-                .with_k_p(50.288)
+                .with_k_p(30.234)
                 .with_k_i(0)
-                .with_k_d(0.84149)
-                .with_k_s(0.067779)
-                # .with_k_v(2.4888)
-                # .with_k_a(0.044164)
+                .with_k_d(0.62183)
+                .with_k_s(0.1645)
             )
+
+            if math.isclose(
+                self.DRIVE_GEAR_RATIO, self.L2_DRIVE_GEAR_RATIO, abs_tol=0.1
+            ):
+                steer_pid = (
+                    Slot0Configs()
+                    .with_k_p(92.079)
+                    .with_k_i(0)
+                    .with_k_d(1.6683)
+                    .with_k_s(0.086374)
+                )
             steer_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
                 1 / self.STEER_GEAR_RATIO
             )

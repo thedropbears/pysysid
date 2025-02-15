@@ -22,7 +22,7 @@ class Drive(Subsystem):
     L1_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
     L2_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0)
 
-    DRIVE_GEAR_RATIO = L1_DRIVE_GEAR_RATIO
+    DRIVE_GEAR_RATIO = L2_DRIVE_GEAR_RATIO
     STEER_GEAR_RATIO = (14 / 50) * (10 / 60)
 
     WHEEL_CIRCUMFERENCE = 4 * 2.54 / 100 * math.pi
@@ -64,15 +64,25 @@ class Drive(Subsystem):
         for steer_motor, steer_encoder in zip(self.steer_motors, self.steer_encoders):
             steer_motor_config = MotorOutputConfigs()
             steer_motor_config.neutral_mode = NeutralModeValue.BRAKE
+            # default to L1 ratio with falcons and then override if we are on l2 with kraken
             steer_pid = (
                 Slot0Configs()
-                .with_k_p(50.288)
+                .with_k_p(30.234)
                 .with_k_i(0)
-                .with_k_d(0.84149)
-                .with_k_s(0.067779)
-                # .with_k_v(2.4888)
-                # .with_k_a(0.044164)
+                .with_k_d(0.62183)
+                .with_k_s(0.1645)
             )
+
+            if math.isclose(
+                self.DRIVE_GEAR_RATIO, self.L2_DRIVE_GEAR_RATIO, abs_tol=0.1
+            ):
+                steer_pid = (
+                    Slot0Configs()
+                    .with_k_p(92.079)
+                    .with_k_i(0)
+                    .with_k_d(1.6683)
+                    .with_k_s(0.086374)
+                )
             steer_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
                 1 / self.STEER_GEAR_RATIO
             )
@@ -97,7 +107,7 @@ class Drive(Subsystem):
         # Tell SysId to make generated commands require this subsystem, suffix test state in
         # WPILog with this subsystem's name ("drive")
         self.sys_id_routine = SysIdRoutine(
-            SysIdRoutine.Config(recordState=self.recordState),
+            SysIdRoutine.Config(recordState=self.recordState, stepVoltage=1.0),
             SysIdRoutine.Mechanism(drive, self.log, self),
         )
 

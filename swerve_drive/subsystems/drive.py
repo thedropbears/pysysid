@@ -22,7 +22,7 @@ class Drive(Subsystem):
     L1_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
     L2_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0)
 
-    DRIVE_GEAR_RATIO = L1_DRIVE_GEAR_RATIO
+    DRIVE_GEAR_RATIO = L2_DRIVE_GEAR_RATIO
     STEER_GEAR_RATIO = (14 / 50) * (10 / 60)
 
     WHEEL_CIRCUMFERENCE = 4 * 2.54 / 100 * math.pi

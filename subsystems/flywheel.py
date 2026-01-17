@@ -1,10 +1,7 @@
-# Copyright (c) FIRST and other WPILib contributors.
-# Open Source Software; you can modify and/or share it under the terms of
-# the WPILib BSD license file in the root directory of this project.
-#
+import typing
 
 import phoenix6
-from commands2 import Command, Subsystem
+from commands2 import Command
 from commands2.sysid import SysIdRoutine
 from phoenix6 import SignalLogger
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
@@ -13,10 +10,12 @@ from phoenix6.signals import NeutralModeValue
 from wpilib import sysid
 from wpimath.units import volts
 
+from subsystems.sysid_subsystem import SysidSubsystem
+
 FollowerDescriptor = tuple[phoenix6.hardware.TalonFX, bool]
 
 
-class Flywheel(Subsystem):
+class Flywheel(SysidSubsystem):
     def __init__(
         self,
         flywheel_motor: phoenix6.hardware.TalonFX,
@@ -52,11 +51,13 @@ class Flywheel(Subsystem):
         self.logger_inited = False
 
     # Tell SysId how to plumb the driving voltage to the motors.
+    @typing.override
     def drive(self, voltage: volts) -> None:
         self.flywheel.set_control(VoltageOut(voltage))
 
     # Tell SysId how to record a frame of data for each motor on the mechanism being
     # characterized.
+    @typing.override
     def log(self, sys_id_routine: sysid.SysIdRoutineLog) -> None:
         (
             sys_id_routine.motor("leader")

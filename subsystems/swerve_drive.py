@@ -1,7 +1,12 @@
 import math
 import typing
 
-from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, Slot0Configs
+from phoenix6.configs import (
+    FeedbackConfigs,
+    MotorOutputConfigs,
+    Slot0Configs,
+    TalonFXConfiguration,
+)
 from phoenix6.configs.config_groups import NeutralModeValue
 from phoenix6.controls import PositionVoltage, VoltageOut
 from phoenix6.hardware import CANcoder, TalonFX
@@ -36,7 +41,9 @@ class SwerveDrive(SysidSubsystem):
                 1 / self.DRIVE_MOTOR_REV_TO_METRES
             )
             drive_config = drive_motor.configurator
-            drive_config.apply(drive_gear_ratio_config)
+            drive_config.apply(
+                TalonFXConfiguration().with_feedback(drive_gear_ratio_config)
+            )
 
         self.steer_1 = TalonFX(TalonIds.STEER_FL)
         self.steer_2 = TalonFX(TalonIds.STEER_RL)
@@ -84,9 +91,12 @@ class SwerveDrive(SysidSubsystem):
             steer_motor.set_position(steer_encoder.get_absolute_position().value)
 
             steer_config = steer_motor.configurator
-            steer_config.apply(steer_motor_config)
-            steer_config.apply(steer_pid)
-            steer_config.apply(steer_gear_ratio_config)
+            steer_config.apply(
+                TalonFXConfiguration()
+                .with_motor_output(steer_motor_config)
+                .with_slot0(steer_pid)
+                .with_feedback(steer_gear_ratio_config)
+            )
 
     # Tell SysId how to record a frame of data for each motor on the mechanism being
     # characterized.

@@ -4,9 +4,9 @@ import phoenix6
 from commands2 import Command
 from commands2.sysid import SysIdRoutine
 from phoenix6 import SignalLogger
-from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs
+from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, TalonFXConfiguration
 from phoenix6.controls import Follower, VoltageOut
-from phoenix6.signals import NeutralModeValue
+from phoenix6.signals import MotorAlignmentValue, NeutralModeValue
 from wpilib import sysid
 from wpimath.units import volts
 
@@ -33,13 +33,28 @@ class Flywheel(SysidSubsystem):
         feedback_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(gearing)
 
         flywheel_config = self.flywheel.configurator
-        flywheel_config.apply(flywheel_motor_config)
-        flywheel_config.apply(feedback_config)
+        flywheel_config.apply(
+            TalonFXConfiguration()
+            .with_feedback(feedback_config)
+            .with_motor_output(flywheel_motor_config)
+        )
 
         for motor, oppose_leader in followers:
-            motor.configurator.apply(flywheel_motor_config)
-            motor.configurator.apply(feedback_config)
-            motor.set_control(Follower(self.flywheel.device_id, oppose_leader))
+            motor.configurator.apply(
+                TalonFXConfiguration()
+                .with_motor_output(flywheel_motor_config)
+                .with_feedback(feedback_config)
+            )
+            motor.set_control(
+                Follower(
+                    self.flywheel.device_id,
+                    (
+                        MotorAlignmentValue.OPPOSED
+                        if oppose_leader
+                        else MotorAlignmentValue.ALIGNED
+                    ),
+                )
+            )
 
         # Tell SysId to make generated commands require this subsystem, suffix test state in
         # WPILog with this subsystem's name ("drive")

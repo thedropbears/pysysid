@@ -86,21 +86,21 @@ license = { text = "MIT" }
 requires-python = ">=3.12,<3.14"
 
 dependencies = [
-    "phoenix6~=25.1.0",
-    "robotpy==2025.2.1.0",
-    "robotpy-commands-v2~=2025.1.1",
-    "robotpy-rev~=2025.0.1",
-    "robotpy-urcl~=2025.0.0",
+    "phoenix6~=26.1.0",
+    "robotpy==2026.2.1",
+    "robotpy-commands-v2~=2026.2.1",
+    "robotpy-rev~=2026.0.0",
+    "robotpy-urcl~=2026.0.0.1",
 ]
 
 [tool.robotpy]
 requires = [
-    "phoenix6~=25.1.0",
-    "robotpy-commands-v2~=2025.1.1",
-    "robotpy-rev~=2025.0.1",
-    "robotpy-urcl~=2025.0.0",
+    "phoenix6~=26.1.0",
+    "robotpy-commands-v2~=2026.2.1",
+    "robotpy-rev~=2026.0.0",
+    "robotpy-urcl~=2026.0.0.1",
     # Not needed for these routines, but keep them on the robot for production.
     "numpy",
     "photonlibpy",
 ]
-robotpy_version = "2025.2.1.0"
+robotpy_version = "2026.2.1"

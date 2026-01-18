@@ -1,14 +1,12 @@
-# Copyright (c) FIRST and other WPILib contributors.
-# Open Source Software; you can modify and/or share it under the terms of
-# the WPILib BSD license file in the root directory of this project.
-#
-
 import math
+import typing
 
-from commands2 import Command, Subsystem
-from commands2.sysid import SysIdRoutine
-from phoenix6 import SignalLogger
-from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, Slot0Configs
+from phoenix6.configs import (
+    FeedbackConfigs,
+    MotorOutputConfigs,
+    Slot0Configs,
+    TalonFXConfiguration,
+)
 from phoenix6.configs.config_groups import NeutralModeValue
 from phoenix6.controls import PositionVoltage, VoltageOut
 from phoenix6.hardware import CANcoder, TalonFX
@@ -16,9 +14,10 @@ from wpilib import sysid
 from wpimath.units import volts
 
 from constants import CancoderIds, TalonIds
+from subsystems.sysid_subsystem import SysidSubsystem
 
 
-class Drive(Subsystem):
+class SwerveDrive(SysidSubsystem):
     L1_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
     L2_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0)
 
@@ -31,28 +30,31 @@ class Drive(Subsystem):
     STEER_MOTOR_REV_TO_RAD = math.tau * STEER_GEAR_RATIO
 
     def __init__(self) -> None:
+        super().__init__()
         # The motors on the left side of the drive
-        self.drive_1 = TalonFX(TalonIds.drive_1)
-        self.drive_2 = TalonFX(TalonIds.drive_2)
-        self.drive_3 = TalonFX(TalonIds.drive_3)
-        self.drive_4 = TalonFX(TalonIds.drive_4)
+        self.drive_1 = TalonFX(TalonIds.DRIVE_FL)
+        self.drive_2 = TalonFX(TalonIds.DRIVE_RL)
+        self.drive_3 = TalonFX(TalonIds.DRIVE_RR)
+        self.drive_4 = TalonFX(TalonIds.DRIVE_FL)
         self.drive_motors = [self.drive_1, self.drive_2, self.drive_3, self.drive_4]
         for drive_motor in self.drive_motors:
             drive_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
                 1 / self.DRIVE_MOTOR_REV_TO_METRES
             )
             drive_config = drive_motor.configurator
-            drive_config.apply(drive_gear_ratio_config)
+            drive_config.apply(
+                TalonFXConfiguration().with_feedback(drive_gear_ratio_config)
+            )
 
-        self.steer_1 = TalonFX(TalonIds.steer_1)
-        self.steer_2 = TalonFX(TalonIds.steer_3)
-        self.steer_3 = TalonFX(TalonIds.steer_2)
-        self.steer_4 = TalonFX(TalonIds.steer_4)
+        self.steer_1 = TalonFX(TalonIds.STEER_FL)
+        self.steer_2 = TalonFX(TalonIds.STEER_RL)
+        self.steer_3 = TalonFX(TalonIds.STEER_RR)
+        self.steer_4 = TalonFX(TalonIds.STEER_FL)
 
-        self.encoder_1 = CANcoder(CancoderIds.swerve_1)
-        self.encoder_2 = CANcoder(CancoderIds.swerve_2)
-        self.encoder_3 = CANcoder(CancoderIds.swerve_3)
-        self.encoder_4 = CANcoder(CancoderIds.swerve_4)
+        self.encoder_1 = CANcoder(CancoderIds.SWERVE_FL)
+        self.encoder_2 = CANcoder(CancoderIds.SWERVE_RL)
+        self.encoder_3 = CANcoder(CancoderIds.SWERVE_RR)
+        self.encoder_4 = CANcoder(CancoderIds.SWERVE_FR)
 
         self.steer_motors = [self.steer_1, self.steer_2, self.steer_3, self.steer_4]
         self.steer_encoders = [
@@ -90,31 +92,16 @@ class Drive(Subsystem):
             steer_motor.set_position(steer_encoder.get_absolute_position().value)
 
             steer_config = steer_motor.configurator
-            steer_config.apply(steer_motor_config)
-            steer_config.apply(steer_pid)
-            steer_config.apply(steer_gear_ratio_config)
-
-        # Tell SysId how to plumb the driving voltage to the motors.
-        def drive(voltage: volts) -> None:
-
-            steer_request = PositionVoltage(0.0)
-            for steer_motor in self.steer_motors:
-                steer_motor.set_control(steer_request)
-            voltage_request = VoltageOut(voltage)
-            for drive_motor in self.drive_motors:
-                drive_motor.set_control(voltage_request)
-
-        # Tell SysId to make generated commands require this subsystem, suffix test state in
-        # WPILog with this subsystem's name ("drive")
-        self.sys_id_routine = SysIdRoutine(
-            SysIdRoutine.Config(recordState=self.recordState, stepVoltage=1.0),
-            SysIdRoutine.Mechanism(drive, self.log, self),
-        )
-
-        self.logger_inited = False
+            steer_config.apply(
+                TalonFXConfiguration()
+                .with_motor_output(steer_motor_config)
+                .with_slot0(steer_pid)
+                .with_feedback(steer_gear_ratio_config)
+            )
 
     # Tell SysId how to record a frame of data for each motor on the mechanism being
     # characterized.
+    @typing.override
     def log(self, sys_id_routine: sysid.SysIdRoutineLog) -> None:
         # Record a frame for the left motors.  Since these share an encoder, we consider
         # the entire group to be one motor.
@@ -127,22 +114,11 @@ class Drive(Subsystem):
                 drive_motor.get_velocity().value * self.WHEEL_CIRCUMFERENCE
             )
 
-    def recordState(self, state: sysid.State) -> None:
-        if not self.logger_inited:
-            SignalLogger.start()
-            self.logger_inited = True
-
-        SignalLogger.write_string(
-            f"sysid-test-state-{self.getName()}",
-            sysid.SysIdRoutineLog.stateEnumToString(state),
-        )
-        self.sys_id_routine.recordState(state)
-
-    def defaultCommand(self) -> Command:
-        return self.run(lambda: None)
-
-    def sysIdQuasistatic(self, direction: SysIdRoutine.Direction) -> Command:
-        return self.sys_id_routine.quasistatic(direction)
-
-    def sysIdDynamic(self, direction: SysIdRoutine.Direction) -> Command:
-        return self.sys_id_routine.dynamic(direction)
+    @typing.override
+    def drive(self, voltage: volts) -> None:
+        steer_request = PositionVoltage(0.0)
+        for steer_motor in self.steer_motors:
+            steer_motor.set_control(steer_request)
+        voltage_request = VoltageOut(voltage)
+        for drive_motor in self.drive_motors:
+            drive_motor.set_control(voltage_request)

@@ -18,10 +18,10 @@ class SysidSubsystem(Subsystem):
         )
 
     def drive(self, voltage: volts) -> None:
-        raise NotImplementedError(f"{type(self).__name__}.drive() not implemented")
+        raise NotImplementedError(f"{type(self).__qualname__}.drive() not implemented")
 
     def log(self, sys_id_routine: sysid.SysIdRoutineLog) -> None:
-        raise NotImplementedError(f"{type(self).__name__}.log() not implemented")
+        raise NotImplementedError(f"{type(self).__qualname__}.log() not implemented")
 
     def recordState(self, state: sysid.State) -> None:
         if not SysidSubsystem.logger_inited:

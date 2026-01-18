@@ -1,5 +1,3 @@
-from abc import ABC, abstractmethod
-
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
 from phoenix6 import SignalLogger
@@ -7,7 +5,7 @@ from wpilib import sysid
 from wpimath.units import volts
 
 
-class SysidSubsystem(Subsystem, ABC):
+class SysidSubsystem(Subsystem):
     logger_inited = False
 
     def __init__(
@@ -19,13 +17,11 @@ class SysidSubsystem(Subsystem, ABC):
             SysIdRoutine.Mechanism(self.drive, self.log, self),
         )
 
-    @abstractmethod
     def drive(self, voltage: volts) -> None:
-        pass
+        raise NotImplementedError(f"{type(self).__name__}.drive() not implemented")
 
-    @abstractmethod
     def log(self, sys_id_routine: sysid.SysIdRoutineLog) -> None:
-        pass
+        raise NotImplementedError(f"{type(self).__name__}.log() not implemented")
 
     def recordState(self, state: sysid.State) -> None:
         if not SysidSubsystem.logger_inited:

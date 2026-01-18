@@ -30,6 +30,7 @@ class SwerveDrive(SysidSubsystem):
     STEER_MOTOR_REV_TO_RAD = math.tau * STEER_GEAR_RATIO
 
     def __init__(self) -> None:
+        super().__init__()
         # The motors on the left side of the drive
         self.drive_1 = TalonFX(TalonIds.DRIVE_FL)
         self.drive_2 = TalonFX(TalonIds.DRIVE_RL)

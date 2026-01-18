@@ -1,9 +1,6 @@
 import typing
 
 import phoenix6
-from commands2 import Command
-from commands2.sysid import SysIdRoutine
-from phoenix6 import SignalLogger
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, TalonFXConfiguration
 from phoenix6.controls import Follower, VoltageOut
 from phoenix6.signals import MotorAlignmentValue, NeutralModeValue
@@ -23,6 +20,7 @@ class Flywheel(SysidSubsystem):
         gearing: float,
         name: str | None = None,
     ) -> None:
+        super().__init__()
         self.flywheel = flywheel_motor
         self.followers = [motor for motor, _ in followers]
         if name is not None:
@@ -56,15 +54,6 @@ class Flywheel(SysidSubsystem):
                 )
             )
 
-        # Tell SysId to make generated commands require this subsystem, suffix test state in
-        # WPILog with this subsystem's name ("drive")
-        self.sys_id_routine = SysIdRoutine(
-            SysIdRoutine.Config(recordState=self.recordState),
-            SysIdRoutine.Mechanism(self.drive, self.log, self),
-        )
-
-        self.logger_inited = False
-
     # Tell SysId how to plumb the driving voltage to the motors.
     @typing.override
     def drive(self, voltage: volts) -> None:
@@ -87,23 +76,3 @@ class Flywheel(SysidSubsystem):
                 .position(motor.get_position().value)
                 .velocity(motor.get_velocity().value)
             )
-
-    def recordState(self, state: sysid.State) -> None:
-        if not self.logger_inited:
-            SignalLogger.start()
-            self.logger_inited = True
-
-        SignalLogger.write_string(
-            f"sysid-test-state-{self.getName()}",
-            sysid.SysIdRoutineLog.stateEnumToString(state),
-        )
-        self.sys_id_routine.recordState(state)
-
-    def defaultCommand(self) -> Command:
-        return self.run(lambda: None)
-
-    def sysIdQuasistatic(self, direction: SysIdRoutine.Direction) -> Command:
-        return self.sys_id_routine.quasistatic(direction)
-
-    def sysIdDynamic(self, direction: SysIdRoutine.Direction) -> Command:
-        return self.sys_id_routine.dynamic(direction)

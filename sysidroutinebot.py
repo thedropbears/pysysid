@@ -22,7 +22,7 @@ class SysIdRoutineBot:
         # if using a swerve steer make sure to comment out references to the drive
         # system to avoid double motor initialisation
         self.flywheel = Flywheel(
-            phoenix6.hardware.TalonFX(TalonIds.STEER_RR),
+            phoenix6.hardware.TalonFX(TalonIds.FLYWHEEL),
             gearing=1 / ((14 / 50) * (10 / 60)),
         )
 

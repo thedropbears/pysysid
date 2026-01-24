@@ -69,10 +69,12 @@ class SwerveDrive(SysidSubsystem):
             # default to L1 ratio with falcons and then override if we are on l2 with kraken
             steer_pid = (
                 Slot0Configs()
-                .with_k_p(30.234)
+                .with_k_p(21.235)
                 .with_k_i(0)
-                .with_k_d(0.62183)
-                .with_k_s(0.1645)
+                .with_k_d(0.23781)
+                .with_k_s(0.092891)
+                .with_k_v(2.3881)
+                .with_k_a(0.026109)
             )
 
             if math.isclose(

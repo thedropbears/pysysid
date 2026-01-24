@@ -21,7 +21,7 @@ Then, download the roboRIO dependencies.
 
 ```sh
 uv run python -m ensurepip
-uv run robotpy --main <SYSID_PROJECT> sync --no-install
+uv run robotpy sync --no-install
 ```
 
 ### pre-commit
@@ -47,7 +47,7 @@ pre-commit install
 ### Simulation
 
 ``` bash
-uv run robotpy --main <SYSID_PROJECT> sim
+uv run robotpy sim
 ```
 
 ### Deploy to Robot
@@ -55,11 +55,11 @@ uv run robotpy --main <SYSID_PROJECT> sim
 Once on robots network
 
 ``` bash
-uv run robotpy --main <SYSID_PROJECT> deploy
+uv run robotpy deploy
 ```
 
 ### Test
 
 ``` bash
-uv run robotpy --main <SYSID_PROJECT> test
+uv run robotpy test
 ```

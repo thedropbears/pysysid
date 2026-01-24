@@ -29,7 +29,7 @@ class SysIdRoutineBot:
         self.controller = CommandXboxController(OIConstants.CONTROLLER_PORT)
 
     def configureBindings(self) -> None:
-        # self.swerve_drive.setDefaultCommand(self.swerve_drive.defaultCommand())
+        self.swerve_drive.setDefaultCommand(self.swerve_drive.defaultCommand())
         self.flywheel.setDefaultCommand(self.flywheel.defaultCommand())
 
         def bindSysId(subsystem: SysidSubsystem, pov: Trigger):

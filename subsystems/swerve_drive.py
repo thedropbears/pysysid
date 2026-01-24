@@ -73,6 +73,8 @@ class SwerveDrive(SysidSubsystem):
                 .with_k_i(0)
                 .with_k_d(0.23781)
                 .with_k_s(0.092891)
+                .with_k_v(2.3881)
+                .with_k_a(0.026109)
             )
 
             if math.isclose(

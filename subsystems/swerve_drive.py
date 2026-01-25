@@ -44,7 +44,11 @@ class SwerveDrive(SysidSubsystem):
             drive_config = drive_motor.configurator
 
             drive_config.apply(
-                TalonFXConfiguration().with_feedback(drive_gear_ratio_config)
+                TalonFXConfiguration()
+                .with_feedback(drive_gear_ratio_config)
+                .with_motor_output(
+                    MotorOutputConfigs().with_neutral_mode(NeutralModeValue.BRAKE)
+                )
             )
 
         self.steer_1 = TalonFX(TalonIds.STEER_FL)

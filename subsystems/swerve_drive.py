@@ -21,7 +21,7 @@ class SwerveDrive(SysidSubsystem):
     L1_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0)
     L2_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0)
 
-    DRIVE_GEAR_RATIO = L2_DRIVE_GEAR_RATIO
+    DRIVE_GEAR_RATIO = L1_DRIVE_GEAR_RATIO
     STEER_GEAR_RATIO = (14 / 50) * (10 / 60)
 
     WHEEL_CIRCUMFERENCE = 4 * 2.54 / 100 * math.pi
@@ -35,21 +35,26 @@ class SwerveDrive(SysidSubsystem):
         self.drive_1 = TalonFX(TalonIds.DRIVE_FL)
         self.drive_2 = TalonFX(TalonIds.DRIVE_RL)
         self.drive_3 = TalonFX(TalonIds.DRIVE_RR)
-        self.drive_4 = TalonFX(TalonIds.DRIVE_FL)
+        self.drive_4 = TalonFX(TalonIds.DRIVE_FR)
         self.drive_motors = [self.drive_1, self.drive_2, self.drive_3, self.drive_4]
         for drive_motor in self.drive_motors:
             drive_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
                 1 / self.DRIVE_MOTOR_REV_TO_METRES
             )
             drive_config = drive_motor.configurator
+
             drive_config.apply(
-                TalonFXConfiguration().with_feedback(drive_gear_ratio_config)
+                TalonFXConfiguration()
+                .with_feedback(drive_gear_ratio_config)
+                .with_motor_output(
+                    MotorOutputConfigs().with_neutral_mode(NeutralModeValue.BRAKE)
+                )
             )
 
         self.steer_1 = TalonFX(TalonIds.STEER_FL)
         self.steer_2 = TalonFX(TalonIds.STEER_RL)
         self.steer_3 = TalonFX(TalonIds.STEER_RR)
-        self.steer_4 = TalonFX(TalonIds.STEER_FL)
+        self.steer_4 = TalonFX(TalonIds.STEER_FR)
 
         self.encoder_1 = CANcoder(CancoderIds.SWERVE_FL)
         self.encoder_2 = CANcoder(CancoderIds.SWERVE_RL)

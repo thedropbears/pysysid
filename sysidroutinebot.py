@@ -34,16 +34,24 @@ class SysIdRoutineBot:
 
         def bindSysId(subsystem: SysidSubsystem, pov: Trigger):
             (pov & self.controller.a()).whileTrue(
-                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
+                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward).onlyWhile(
+                    subsystem.BeforePositiveLimit
+                )
             )
             (pov & self.controller.b()).whileTrue(
-                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).onlyWhile(
+                    subsystem.BeforeNegativeLimit
+                )
             )
             (pov & self.controller.x()).whileTrue(
-                subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward)
+                subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward).onlyWhile(
+                    subsystem.BeforePositiveLimit
+                )
             )
             (pov & self.controller.y()).whileTrue(
-                subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse)
+                subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse).onlyWhile(
+                    subsystem.BeforeNegativeLimit
+                )
             )
 
         bindSysId(self.swerve_drive, self.controller.rightBumper())

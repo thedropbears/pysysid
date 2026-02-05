@@ -22,7 +22,7 @@ class RevTurret(SysidSubsystem):
         invert_absolute_encoder: bool,
         encoder_offset: float,
     ):
-        super().__init__(ramp_rate=0.5, step_voltage=3.5, timeout=5.0)
+        super().__init__(ramp_rate=0.5, step_voltage=1.75, timeout=10.0)
         self.motor = motor
 
         config = SparkMaxConfig()

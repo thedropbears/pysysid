@@ -53,22 +53,22 @@ class SysIdRoutineBot:
         def bindSysId(subsystem: SysidSubsystem, pov: Trigger):
             (pov & self.controller.a()).whileTrue(
                 subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward).onlyWhile(
-                    subsystem.BeforePositiveLimit
+                    subsystem.beforePositiveLimit
                 )
             )
             (pov & self.controller.b()).whileTrue(
                 subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).onlyWhile(
-                    subsystem.BeforeNegativeLimit
+                    subsystem.beforeNegativeLimit
                 )
             )
             (pov & self.controller.x()).whileTrue(
                 subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward).onlyWhile(
-                    subsystem.BeforePositiveLimit
+                    subsystem.beforePositiveLimit
                 )
             )
             (pov & self.controller.y()).whileTrue(
                 subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse).onlyWhile(
-                    subsystem.BeforeNegativeLimit
+                    subsystem.beforeNegativeLimit
                 )
             )
 

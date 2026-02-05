@@ -75,9 +75,9 @@ class RevTurret(SysidSubsystem):
         pass
 
     @typing.override
-    def BeforePositiveLimit(self) -> bool:
+    def beforePositiveLimit(self) -> bool:
         return self.relative_encoder.getPosition() < self.positive_limit
 
     @typing.override
-    def BeforeNegativeLimit(self) -> bool:
+    def beforeNegativeLimit(self) -> bool:
         return self.relative_encoder.getPosition() > self.negative_limit

@@ -71,12 +71,8 @@ class RevTurret(SysidSubsystem):
     # characterized.
     @typing.override
     def log(self, sys_id_routine: sysid.SysIdRoutineLog) -> None:
-        (
-            sys_id_routine.motor("leader")
-            .voltage(self.motor.getAppliedOutput())
-            .position(self.relative_encoder.getPosition())
-            .velocity(self.relative_encoder.getVelocity())
-        )
+        # using the urcl bits instead
+        pass
 
     @typing.override
     def BeforePositiveLimit(self) -> bool:

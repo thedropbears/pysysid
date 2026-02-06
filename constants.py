@@ -26,5 +26,15 @@ class CancoderIds(enum.IntEnum):
     SWERVE_FR = 4
 
 
+@enum.unique
+class SparkIds(enum.IntEnum):
+    TURRET = 2
+
+
+@enum.unique
+class DioChannel(enum.IntEnum):
+    TURRET_ENCODER = 1
+
+
 class OIConstants:
     CONTROLLER_PORT = 0

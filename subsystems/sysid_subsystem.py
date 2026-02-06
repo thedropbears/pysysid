@@ -2,18 +2,23 @@ from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
 from phoenix6 import SignalLogger
 from wpilib import sysid
-from wpimath.units import volts
+from wpimath.units import seconds, volts
 
 
 class SysidSubsystem(Subsystem):
     logger_inited = False
 
     def __init__(
-        self,
+        self, ramp_rate: volts = 1.0, step_voltage: volts = 7.0, timeout: seconds = 10.0
     ) -> None:
 
         self.sys_id_routine = SysIdRoutine(
-            SysIdRoutine.Config(recordState=self.recordState),
+            SysIdRoutine.Config(
+                recordState=self.recordState,
+                rampRate=ramp_rate,
+                stepVoltage=step_voltage,
+                timeout=timeout,
+            ),
             SysIdRoutine.Mechanism(self.drive, self.log, self),
         )
 
@@ -39,6 +44,12 @@ class SysidSubsystem(Subsystem):
 
     def sysIdQuasistatic(self, direction: SysIdRoutine.Direction) -> Command:
         return self.sys_id_routine.quasistatic(direction)
+
+    def beforePositiveLimit(self) -> bool:
+        return True
+
+    def beforeNegativeLimit(self) -> bool:
+        return True
 
     def sysIdDynamic(self, direction: SysIdRoutine.Direction) -> Command:
         return self.sys_id_routine.dynamic(direction)

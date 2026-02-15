@@ -41,7 +41,7 @@ class SysIdRoutineBot:
 
         self.turret = TalonTurret(
             phoenix6.hardware.TalonFXS(TalonIds.TURRET),
-            (1 / 5) * (25 / 145),
+            (40 / 200),
             degreesToRotations(200),
             degreesToRotations(-200),
         )

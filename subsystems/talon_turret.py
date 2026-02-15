@@ -10,18 +10,20 @@ from phoenix6.controls import VoltageOut
 from phoenix6.hardware import TalonFXS
 from phoenix6.signals import NeutralModeValue
 from wpilib import sysid
-from wpimath.units import degrees, degreesToRotations, volts
+from wpimath.units import volts
 
 from subsystems.sysid_subsystem import SysidSubsystem
 
+rotations = float
 
-class FalconTurret(SysidSubsystem):
+
+class TalonTurret(SysidSubsystem):
     def __init__(
         self,
         motor: TalonFXS,
         sensor_to_mechanism_gearing: float,
-        positive_limit: degrees,
-        negative_limit: degrees,
+        positive_limit: rotations,
+        negative_limit: rotations,
     ) -> None:
         super().__init__(ramp_rate=0.5, step_voltage=1.75, timeout=10.0)
 
@@ -40,9 +42,9 @@ class FalconTurret(SysidSubsystem):
 
         limit_switch_config = (
             SoftwareLimitSwitchConfigs()
-            .with_forward_soft_limit_threshold(degreesToRotations(positive_limit))
+            .with_forward_soft_limit_threshold(positive_limit)
             .with_forward_soft_limit_enable(True)
-            .with_reverse_soft_limit_threshold(degreesToRotations(negative_limit))
+            .with_reverse_soft_limit_threshold(negative_limit)
             .with_reverse_soft_limit_enable(True)
         )
 

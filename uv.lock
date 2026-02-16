@@ -360,16 +360,16 @@ wheels = [
 
 [[package]]
 name = "phoenix6"
-version = "26.1.0"
+version = "26.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "importlib-resources" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/32/be81ff0a5799083634c5aa357bf17a9ea68d80139e81160e87b162a6348d/phoenix6-26.1.0-cp310-abi3-macosx_13_0_universal2.whl", hash = "sha256:3072d89cfefb14db4c016f35efceb9183c5d39c46551bf7f5f7dd00122784cb9", size = 7344496, upload-time = "2026-01-08T01:58:36.154Z" },
-    { url = "https://files.pythonhosted.org/packages/1f/0b/0da9f7a78d0de46c2ca3d7ff6fa60634b43e3e20b22d5efeaab7260db7a2/phoenix6-26.1.0-cp310-abi3-manylinux_2_35_aarch64.whl", hash = "sha256:af12d9d5162901a0f41f453aa3dac1757a5d8a4306f6fdac4860b14cb269045f", size = 6547369, upload-time = "2026-01-08T01:58:39.659Z" },
-    { url = "https://files.pythonhosted.org/packages/6c/f0/983554546e8929d3593ca7806ad83f3042001aaa0d32734be1d2530a9a04/phoenix6-26.1.0-cp310-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:7fd62cabe574a2ef7b447f3afd657ce125dbd424c9eaac6b5df305b626e5851e", size = 6904686, upload-time = "2026-01-08T01:58:43.558Z" },
-    { url = "https://files.pythonhosted.org/packages/26/23/a62ca054401c29e90102b6bc151e935f1481165b24941dfa1035ffac8273/phoenix6-26.1.0-cp310-abi3-win_amd64.whl", hash = "sha256:b5c340f9ca7ee55007ac8f37ffa8f0edfedada1a93e700a73464f599a4dd8c9f", size = 4790589, upload-time = "2026-01-08T01:58:47.063Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/dc/1f41c44ce686f8e338986ab812535afa024e04040adc338d2f855e4b9169/phoenix6-26.1.1-cp310-abi3-macosx_13_0_universal2.whl", hash = "sha256:d36f26a2c17b87df8bd56adf9c3a09b3f4d6db5769420b939f5373844f9fc0b0", size = 7347005, upload-time = "2026-01-28T18:49:31.212Z" },
+    { url = "https://files.pythonhosted.org/packages/86/f2/4b8a1940f5e4d6408120fb22f15c9385f0743abad68f72ad1723980df349/phoenix6-26.1.1-cp310-abi3-manylinux_2_35_aarch64.whl", hash = "sha256:7e09a9970e5ebaddcff093611c8a713a1504e4de916a49c1d4dc2e9a2261294f", size = 6551004, upload-time = "2026-01-28T18:49:34.795Z" },
+    { url = "https://files.pythonhosted.org/packages/09/df/2d2bf2f249d11831652fdff899d5f828cf39282844dcfc320e5c9f943e3b/phoenix6-26.1.1-cp310-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:355a0d9aa4627f52a02d132cba89826f7ffb2de0ccd65f8181d6b646bd7937de", size = 6914938, upload-time = "2026-01-28T18:49:38.927Z" },
+    { url = "https://files.pythonhosted.org/packages/df/52/6b791335e41a5fd21f7785107272db1f67620a514953affb5f74e67dd2e6/phoenix6-26.1.1-cp310-abi3-win_amd64.whl", hash = "sha256:dddb52bb0e6404c56f755135ed6cf2393ccb83083db0f0ec56a538c28b8ee2bd", size = 4793225, upload-time = "2026-01-28T18:49:43.199Z" },
 ]
 
 [[package]]
@@ -533,10 +533,10 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "phoenix6", specifier = "~=26.1.0" },
+    { name = "phoenix6", specifier = "~=26.1.1" },
     { name = "robotpy", specifier = "==2026.2.1" },
     { name = "robotpy-commands-v2", specifier = "~=2026.2.1" },
-    { name = "robotpy-rev", specifier = "~=2026.0.0" },
+    { name = "robotpy-rev", specifier = "~=2026.0.1" },
     { name = "robotpy-urcl", specifier = "~=2026.0.0.1" },
 ]
 

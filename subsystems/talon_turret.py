@@ -1,6 +1,7 @@
 import typing
 
 from phoenix6.configs import (
+    CommutationConfigs,
     ExternalFeedbackConfigs,
     MotorOutputConfigs,
     SoftwareLimitSwitchConfigs,
@@ -8,7 +9,7 @@ from phoenix6.configs import (
 )
 from phoenix6.controls import VoltageOut
 from phoenix6.hardware import TalonFXS
-from phoenix6.signals import NeutralModeValue
+from phoenix6.signals import MotorArrangementValue, NeutralModeValue
 from wpilib import sysid
 from wpimath.units import volts
 
@@ -52,6 +53,11 @@ class TalonTurret(SysidSubsystem):
             TalonFXSConfiguration()
             .with_motor_output(motor_output_config)
             .with_external_feedback(external_feedback_config)
+            .with_commutation(
+                CommutationConfigs().with_motor_arrangement(
+                    MotorArrangementValue.MINION_JST
+                )
+            )
             .with_software_limit_switch(limit_switch_config)
         )
 

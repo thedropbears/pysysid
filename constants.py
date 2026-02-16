@@ -17,7 +17,7 @@ class TalonIds(enum.IntEnum):
 
     FLYWHEEL = 9
 
-    TURRET = 10
+    TURRET = 16
 
 
 @enum.unique

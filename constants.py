@@ -19,6 +19,8 @@ class TalonIds(enum.IntEnum):
 
     TURRET = 16
 
+    CLIMBER = 12
+
 
 @enum.unique
 class CancoderIds(enum.IntEnum):
@@ -31,6 +33,8 @@ class CancoderIds(enum.IntEnum):
 @enum.unique
 class SparkIds(enum.IntEnum):
     TURRET = 2
+
+    CLIMBER_SWITCH_HOST = 4
 
 
 @enum.unique

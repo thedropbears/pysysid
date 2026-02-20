@@ -1,10 +1,12 @@
 import math
 
 import phoenix6
+import rev
 from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
 
-from constants import OIConstants, TalonIds
+from constants import OIConstants, SparkIds, TalonIds
+from subsystems.climber import Climber
 from subsystems.flywheel import Flywheel
 from subsystems.swerve_drive import SwerveDrive
 from subsystems.sysid_subsystem import SysidSubsystem
@@ -12,6 +14,9 @@ from subsystems.talon_turret import TalonTurret
 
 
 class SysIdRoutineBot:
+    GEAR_RATIO = (1.0 / 1.0) * (1.0 / 9.0) * (1.0 / 4.0)
+    SHAFT_RADIUS = 0.00733  # m
+
     def __init__(self) -> None:
 
         # This is only for the drive motors
@@ -45,6 +50,17 @@ class SysIdRoutineBot:
             1 / ((1 / 5) * (40 / 200) * math.tau),
             math.radians(200),
             math.radians(-200),
+        )
+
+        CLIMBER_GEAR_RATIO = (1.0 / 1.0) * (1.0 / 9.0) * (1.0 / 4.0)
+        CLIMBER_SHAFT_RADIUS = 0.00733  # m
+
+        self.climber = Climber(
+            phoenix6.hardware.TalonFX(TalonIds.CLIMBER),
+            1 / (CLIMBER_GEAR_RATIO * CLIMBER_SHAFT_RADIUS * math.tau),
+            rev.SparkMax(
+                SparkIds.CLIMBER_SWITCH_HOST, rev.SparkMax.MotorType.kBrushless
+            ),
         )
 
         self.controller = CommandXboxController(OIConstants.CONTROLLER_PORT)

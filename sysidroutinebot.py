@@ -3,18 +3,15 @@ import math
 import phoenix6
 from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
-from rev import SparkMax
-from wpilib import DutyCycleEncoder
 
-from constants import DioChannel, OIConstants, SparkIds, TalonIds
+from constants import OIConstants, TalonIds
 from subsystems.flywheel import Flywheel
-from subsystems.rev_turret import RevTurret
 from subsystems.swerve_drive import SwerveDrive
 from subsystems.sysid_subsystem import SysidSubsystem
+from subsystems.talon_turret import TalonTurret
 
 
 class SysIdRoutineBot:
-
     def __init__(self) -> None:
 
         # This is only for the drive motors
@@ -31,7 +28,7 @@ class SysIdRoutineBot:
             gearing=1 / ((14 / 50) * (10 / 60)),
         )
 
-        self.turret = RevTurret(
+        """self.turret = RevTurret(
             SparkMax(SparkIds.TURRET, SparkMax.MotorType.kBrushless),
             (1 / 5) * (25 / 145),
             True,
@@ -41,6 +38,13 @@ class SysIdRoutineBot:
             1 / ((145 / 40) * (16 / 70)),
             True,
             0.359977,
+        )"""
+
+        self.turret = TalonTurret(
+            phoenix6.hardware.TalonFXS(TalonIds.TURRET),
+            1 / ((1 / 5) * (40 / 200) * math.tau),
+            math.radians(200),
+            math.radians(-200),
         )
 
         self.controller = CommandXboxController(OIConstants.CONTROLLER_PORT)

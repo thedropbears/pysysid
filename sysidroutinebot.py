@@ -54,10 +54,13 @@ class SysIdRoutineBot:
 
         CLIMBER_GEAR_RATIO = (1.0 / 1.0) * (1.0 / 9.0) * (1.0 / 4.0)
         CLIMBER_SHAFT_RADIUS = 0.00733  # m
+        CLIMBER_FUDGE = 0.773
 
+        # assumes it is starting in a retracted position
         self.climber = Climber(
             phoenix6.hardware.TalonFX(TalonIds.CLIMBER),
-            1 / (CLIMBER_GEAR_RATIO * CLIMBER_SHAFT_RADIUS * math.tau),
+            (1 / (CLIMBER_GEAR_RATIO * CLIMBER_SHAFT_RADIUS * math.tau))
+            * CLIMBER_FUDGE,
             rev.SparkMax(
                 SparkIds.CLIMBER_SWITCH_HOST, rev.SparkMax.MotorType.kBrushless
             ),
@@ -95,3 +98,4 @@ class SysIdRoutineBot:
         bindSysId(self.swerve_drive, self.controller.rightBumper())
         bindSysId(self.flywheel, self.controller.leftBumper())
         bindSysId(self.turret, self.controller.rightTrigger())
+        bindSysId(self.climber, self.controller.leftTrigger())

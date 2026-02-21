@@ -21,10 +21,9 @@ class Climber(SysidSubsystem):
         self,
         motor: TalonFX,
         sensor_to_mechanism_gearing: float,
-        limit_switch_host: SparkMax,  
-
+        limit_switch_host: SparkMax,
     ) -> None:
-        super().__init__(ramp_rate=0.5, step_voltage=1.75, timeout=10.0)
+        super().__init__(ramp_rate=1.0, step_voltage=3.5, timeout=10.0)
 
         self.motor = motor
 
@@ -34,13 +33,7 @@ class Climber(SysidSubsystem):
         sensor_config = SparkMaxConfig()
         sensor_config.limitSwitch.forwardLimitSwitchType(
             LimitSwitchConfig.Type.kNormallyClosed
-        ).forwardLimitSwitchTriggerBehavior(
-            LimitSwitchConfig.Behavior.kStopMovingMotor
-        ).reverseLimitSwitchType(
-            LimitSwitchConfig.Type.kNormallyClosed
-        ).reverseLimitSwitchTriggerBehavior(
-            LimitSwitchConfig.Behavior.kStopMovingMotorAndSetPosition
-        ).reverseLimitSwitchPosition(0)
+        ).reverseLimitSwitchType(LimitSwitchConfig.Type.kNormallyClosed)
 
         motor_output_config = MotorOutputConfigs().with_neutral_mode(
             NeutralModeValue.BRAKE
@@ -57,6 +50,7 @@ class Climber(SysidSubsystem):
         )
 
         self._voltage_req = VoltageOut(0.0)
+        self.motor.set_position(0.0)
 
     def at_forward_limit(self) -> bool:
         return self.forward_limit_switch.get()

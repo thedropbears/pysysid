@@ -34,9 +34,9 @@ class TalonArm(SysidSubsystem):
         motor_output_configs = (
             MotorOutputConfigs()
             .with_inverted(
-                InvertedValue.COUNTER_CLOCKWISE_POSITIVE
+                InvertedValue.CLOCKWISE_POSITIVE
                 if invert_motor
-                else InvertedValue.CLOCKWISE_POSITIVE
+                else InvertedValue.COUNTER_CLOCKWISE_POSITIVE
             )
             .with_neutral_mode(NeutralModeValue.BRAKE)
         )

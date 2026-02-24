@@ -16,8 +16,10 @@ class TalonIds(enum.IntEnum):
     STEER_FR = 8
 
     FLYWHEEL = 9
-
     TURRET = 16
+
+    INTAKE_DEPLOYER_LEFT = 17
+    INTAKE_DEPLOYER_RIGHT = 18
 
 
 @enum.unique
@@ -36,6 +38,7 @@ class SparkIds(enum.IntEnum):
 @enum.unique
 class DioChannel(enum.IntEnum):
     TURRET_ENCODER = 1
+    INTAKE_DEPLOYER_ENCODER = 2
 
 
 class OIConstants:

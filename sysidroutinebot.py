@@ -3,11 +3,13 @@ import math
 import phoenix6
 from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
+from wpilib import DutyCycleEncoder
 
-from constants import OIConstants, TalonIds
+from constants import DioChannel, OIConstants, TalonIds
 from subsystems.flywheel import Flywheel
 from subsystems.swerve_drive import SwerveDrive
 from subsystems.sysid_subsystem import SysidSubsystem
+from subsystems.talon_arm import TalonArm
 from subsystems.talon_turret import TalonTurret
 
 
@@ -47,6 +49,17 @@ class SysIdRoutineBot:
             math.radians(-200),
         )
 
+        self.talon_arm = TalonArm(
+            phoenix6.hardware.TalonFX(TalonIds.INTAKE_DEPLOYER_LEFT),
+            (phoenix6.hardware.TalonFX(TalonIds.INTAKE_DEPLOYER_RIGHT), True),
+            invert_motor=False,
+            motor_to_mechanism_gearing=(5 / 1) * (26 / 50),
+            absolute_encoder=DutyCycleEncoder(DioChannel.INTAKE_DEPLOYER_ENCODER),
+            encoder_offset=0,
+            positive_limit=math.radians(90),
+            negative_limit=math.radians(0),
+        )
+
         self.controller = CommandXboxController(OIConstants.CONTROLLER_PORT)
 
     def configureBindings(self) -> None:
@@ -79,3 +92,4 @@ class SysIdRoutineBot:
         bindSysId(self.swerve_drive, self.controller.rightBumper())
         bindSysId(self.flywheel, self.controller.leftBumper())
         bindSysId(self.turret, self.controller.rightTrigger())
+        bindSysId(self.talon_arm, self.controller.leftTrigger())

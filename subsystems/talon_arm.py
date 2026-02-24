@@ -10,7 +10,7 @@ from phoenix6.controls import Follower, VoltageOut
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import InvertedValue, MotorAlignmentValue, NeutralModeValue
 from wpilib import DutyCycleEncoder, sysid
-from wpimath.units import radians, radiansToRotations, volts
+from wpimath.units import radians, volts
 
 from subsystems.sysid_subsystem import SysidSubsystem
 
@@ -29,7 +29,7 @@ class TalonArm(SysidSubsystem):
         positive_limit: radians,
         negative_limit: radians,
     ):
-        super().__init__()
+        super().__init__(step_voltage=2, ramp_rate=1.2)
 
         motor_output_configs = (
             MotorOutputConfigs()
@@ -51,13 +51,12 @@ class TalonArm(SysidSubsystem):
             .with_feedback(feedback_configs)
             .with_software_limit_switch(
                 SoftwareLimitSwitchConfigs()
-                .with_forward_soft_limit_threshold(radiansToRotations(positive_limit))
+                .with_forward_soft_limit_threshold(positive_limit)
                 .with_forward_soft_limit_enable(True)
-                .with_reverse_soft_limit_threshold(radiansToRotations(negative_limit))
+                .with_reverse_soft_limit_threshold(negative_limit)
                 .with_reverse_soft_limit_enable(True)
             )
         )
-        arm_motor.set_position(absolute_encoder.get() + encoder_offset)
 
         self.followers = [motor for motor, _ in followers]
 
@@ -77,6 +76,9 @@ class TalonArm(SysidSubsystem):
                     ),
                 )
             )
+
+        self.absolute_encoder = absolute_encoder
+        self.encoder_offset = encoder_offset
 
     @override
     def drive(self, voltage: volts) -> None:

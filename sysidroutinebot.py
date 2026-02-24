@@ -53,10 +53,12 @@ class SysIdRoutineBot:
             phoenix6.hardware.TalonFX(TalonIds.INTAKE_DEPLOYER_LEFT),
             (phoenix6.hardware.TalonFX(TalonIds.INTAKE_DEPLOYER_RIGHT), True),
             invert_motor=False,
-            motor_to_mechanism_gearing=(5 / 1) * (26 / 50),
-            absolute_encoder=DutyCycleEncoder(DioChannel.INTAKE_DEPLOYER_ENCODER),
-            encoder_offset=0,
-            positive_limit=math.radians(90),
+            motor_to_mechanism_gearing=1 / (((1 / 5) * (26 / 50)) * math.tau),
+            absolute_encoder=DutyCycleEncoder(
+                DioChannel.INTAKE_DEPLOYER_ENCODER, math.tau, 0
+            ),
+            encoder_offset=3.419406,
+            positive_limit=math.radians(120),
             negative_limit=math.radians(0),
         )
 

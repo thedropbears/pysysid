@@ -16,10 +16,10 @@ class TalonIds(enum.IntEnum):
     STEER_FR = 8
 
     FLYWHEEL = 9
-    TURRET = 16
+    TURRET = 15
 
-    INTAKE_DEPLOYER_LEFT = 17
-    INTAKE_DEPLOYER_RIGHT = 18
+    INTAKE_DEPLOYER_LEFT = 16
+    INTAKE_DEPLOYER_RIGHT = 17
 
 
 @enum.unique

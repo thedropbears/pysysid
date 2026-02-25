@@ -1,5 +1,7 @@
 from typing import override
 
+from commands2 import Command
+from commands2.sysid.sysidroutine import SysIdRoutine
 from phoenix6.configs import (
     FeedbackConfigs,
     MotorOutputConfigs,
@@ -18,6 +20,12 @@ FollowerDescriptor = tuple[TalonFX, bool]
 
 
 class TalonArm(SysidSubsystem):
+    DEPLOY_STEP_VOLTAGE = 1
+    DEPLOY_RAMP_RATE = 0.6
+
+    RETRACT_STEP_VOLTAGE = 2
+    RETRACT_RAMP_RATE = 1.2
+
     def __init__(
         self,
         arm_motor: TalonFX,
@@ -29,7 +37,9 @@ class TalonArm(SysidSubsystem):
         positive_limit: radians,
         negative_limit: radians,
     ):
-        super().__init__(step_voltage=2, ramp_rate=1.2)
+        super().__init__(
+            step_voltage=self.DEPLOY_STEP_VOLTAGE, ramp_rate=self.DEPLOY_RAMP_RATE
+        )
 
         motor_output_configs = (
             MotorOutputConfigs()
@@ -107,3 +117,21 @@ class TalonArm(SysidSubsystem):
     @override
     def beforeNegativeLimit(self) -> bool:
         return not self.arm_motor.get_fault_reverse_soft_limit().value
+
+    @override
+    def sysIdQuasistatic(self, direction: SysIdRoutine.Direction) -> Command:
+        if direction == SysIdRoutine.Direction.kForward:
+            self.setRampRate(self.RETRACT_RAMP_RATE)
+        else:
+            self.setRampRate(self.DEPLOY_RAMP_RATE)
+
+        return super().sysIdQuasistatic(direction)
+
+    @override
+    def sysIdDynamic(self, direction: SysIdRoutine.Direction) -> Command:
+        if direction == SysIdRoutine.Direction.kForward:
+            self.setStepVoltage(self.RETRACT_STEP_VOLTAGE)
+        else:
+            self.setStepVoltage(self.DEPLOY_STEP_VOLTAGE)
+
+        return super().sysIdDynamic(direction)

@@ -14,6 +14,3 @@ class MyRobot(TimedCommandRobot):
 
     def teleopInit(self) -> None:
         CommandScheduler.getInstance().cancelAll()
-
-    def disabledPeriodic(self) -> None:
-        self.robot.talon_arm.sync_encoders()

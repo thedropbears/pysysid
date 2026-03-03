@@ -4,9 +4,8 @@ import phoenix6
 from commands2 import DeferredCommand
 from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
-from wpilib import DutyCycleEncoder
 
-from constants import DioChannel, OIConstants, TalonIds
+from constants import CancoderIds, OIConstants, TalonIds
 from subsystems.flywheel import Flywheel
 from subsystems.swerve_drive import SwerveDrive
 from subsystems.sysid_subsystem import SysidSubsystem
@@ -54,11 +53,10 @@ class SysIdRoutineBot:
             phoenix6.hardware.TalonFX(TalonIds.INTAKE_DEPLOYER_LEFT),
             (phoenix6.hardware.TalonFX(TalonIds.INTAKE_DEPLOYER_RIGHT), True),
             invert_motor=False,
-            motor_to_mechanism_gearing=1 / ((1 / 5) * (26 / 50)),
-            absolute_encoder=DutyCycleEncoder(
-                DioChannel.INTAKE_DEPLOYER_ENCODER, math.tau, 0
-            ),
-            encoder_offset=2.390786,
+            motor_to_encoder_gearing=1 / ((1 / 5) * (26 / 50)),
+            encoder_to_mechanism_gearing=1,
+            absolute_encoder=phoenix6.hardware.CANcoder(CancoderIds.INTAKE),
+            encoder_offset=0.147705,
             positive_limit=math.radians(114),
             negative_limit=math.radians(0),
         )

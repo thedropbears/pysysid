@@ -29,6 +29,8 @@ class CancoderIds(enum.IntEnum):
     SWERVE_RR = 3
     SWERVE_FR = 4
 
+    INTAKE = 8
+
 
 @enum.unique
 class SparkIds(enum.IntEnum):

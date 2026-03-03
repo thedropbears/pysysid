@@ -4,16 +4,24 @@ from typing import override
 from commands2 import Command
 from commands2.sysid.sysidroutine import SysIdRoutine
 from phoenix6.configs import (
+    CANcoderConfiguration,
     FeedbackConfigs,
+    MagnetSensorConfigs,
     MotorOutputConfigs,
     SoftwareLimitSwitchConfigs,
     TalonFXConfiguration,
 )
 from phoenix6.controls import Follower, VoltageOut
-from phoenix6.hardware import TalonFX
-from phoenix6.signals import InvertedValue, MotorAlignmentValue, NeutralModeValue
-from wpilib import DutyCycleEncoder, sysid
-from wpimath.units import radians, volts
+from phoenix6.hardware import CANcoder, TalonFX
+from phoenix6.signals import (
+    FeedbackSensorSourceValue,
+    InvertedValue,
+    MotorAlignmentValue,
+    NeutralModeValue,
+    SensorDirectionValue,
+)
+from wpilib import sysid
+from wpimath.units import radians, turns, volts
 
 from subsystems.sysid_subsystem import SysidSubsystem
 
@@ -32,9 +40,10 @@ class TalonArm(SysidSubsystem):
         arm_motor: TalonFX,
         *followers: FollowerDescriptor,
         invert_motor: bool,
-        motor_to_mechanism_gearing: float,
-        absolute_encoder: DutyCycleEncoder,
-        encoder_offset: radians,
+        motor_to_encoder_gearing: float,
+        encoder_to_mechanism_gearing: float,
+        absolute_encoder: CANcoder,
+        encoder_offset: turns,
         positive_limit: radians,
         negative_limit: radians,
     ):
@@ -51,8 +60,13 @@ class TalonArm(SysidSubsystem):
             )
             .with_neutral_mode(NeutralModeValue.BRAKE)
         )
-        feedback_configs = FeedbackConfigs().with_sensor_to_mechanism_ratio(
-            motor_to_mechanism_gearing
+
+        feedback_configs = (
+            FeedbackConfigs()
+            .with_sensor_to_mechanism_ratio(encoder_to_mechanism_gearing)
+            .with_rotor_to_sensor_ratio(motor_to_encoder_gearing)
+            .with_feedback_sensor_source(FeedbackSensorSourceValue.REMOTE_CANCODER)
+            .with_feedback_remote_sensor_id(absolute_encoder.device_id)
         )
 
         self.arm_motor = arm_motor
@@ -69,7 +83,7 @@ class TalonArm(SysidSubsystem):
             )
         )
 
-        self.positive_limit = (positive_limit - math.radians(30)) / math.tau
+        self.positive_limit = (positive_limit - math.radians(20)) / math.tau
         self.negative_limit = (negative_limit + math.radians(5)) / math.tau
 
         self.followers = followers
@@ -81,13 +95,17 @@ class TalonArm(SysidSubsystem):
                 .with_motor_output(motor_output_configs)
             )
 
-        self.absolute_encoder = absolute_encoder
-        self.encoder_offset = encoder_offset
-
-    def sync_encoders(self) -> None:
-        self.arm_motor.set_position(
-            (self.absolute_encoder.get() - self.encoder_offset) / math.tau
+        encoder_magnet_config = (
+            MagnetSensorConfigs()
+            .with_magnet_offset(encoder_offset)
+            .with_sensor_direction(SensorDirectionValue.COUNTER_CLOCKWISE_POSITIVE)
         )
+
+        absolute_encoder.configurator.apply(
+            CANcoderConfiguration().with_magnet_sensor(encoder_magnet_config)
+        )
+
+        self.absolute_encoder = absolute_encoder
 
     @override
     def drive(self, voltage: volts) -> None:
@@ -109,24 +127,17 @@ class TalonArm(SysidSubsystem):
         (
             sys_id_routine.motor("leader")
             .voltage(self.arm_motor.get_motor_voltage().value)
-            .position(self.arm_motor.get_position().value)
-            .velocity(self.arm_motor.get_velocity().value)
+            .position(self.absolute_encoder.get_position().value)
+            .velocity(self.absolute_encoder.get_velocity().value)
         )
-        for motor, _ in self.followers:
-            (
-                sys_id_routine.motor(f"follower-{motor.device_id}")
-                .voltage(motor.get_motor_voltage().value)
-                .position(motor.get_position().value)
-                .velocity(motor.get_velocity().value)
-            )
 
     @override
     def beforePositiveLimit(self) -> bool:
-        return self.arm_motor.get_position().value < self.positive_limit
+        return self.absolute_encoder.get_position().value < self.positive_limit
 
     @override
     def beforeNegativeLimit(self) -> bool:
-        return self.arm_motor.get_position().value > self.negative_limit
+        return self.absolute_encoder.get_position().value > self.negative_limit
 
     @override
     def sysIdQuasistatic(self, direction: SysIdRoutine.Direction) -> Command:

@@ -1,6 +1,7 @@
 import math
 
 import phoenix6
+from commands2 import DeferredCommand
 from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
 
@@ -59,25 +60,45 @@ class SysIdRoutineBot:
                 pov
                 & self.controller.a()
                 & Trigger(lambda: not subsystem.atPositiveLimit())
-            ).whileTrue(subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward))
+            ).whileTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward),
+                    subsystem,
+                )
+            )
 
             (
                 pov
                 & self.controller.b()
                 & Trigger(lambda: not subsystem.atNegativeLimit())
-            ).whileTrue(subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse))
+            ).whileTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
+                    subsystem,
+                )
+            )
 
             (
                 pov
                 & self.controller.x()
                 & Trigger(lambda: not subsystem.atPositiveLimit())
-            ).whileTrue(subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward))
+            ).whileTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward),
+                    subsystem,
+                )
+            )
 
             (
                 pov
                 & self.controller.y()
                 & Trigger(lambda: not subsystem.atNegativeLimit())
-            ).whileTrue(subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse))
+            ).whileTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
+                    subsystem,
+                )
+            )
 
         bindSysId(self.swerve_drive, self.controller.rightBumper())
         bindSysId(self.flywheel, self.controller.leftBumper())

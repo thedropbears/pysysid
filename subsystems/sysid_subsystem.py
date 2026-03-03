@@ -53,3 +53,9 @@ class SysidSubsystem(Subsystem):
 
     def sysIdDynamic(self, direction: SysIdRoutine.Direction) -> Command:
         return self.sys_id_routine.dynamic(direction)
+
+    def setRampRate(self, voltage: volts) -> None:
+        self.sys_id_routine.config.rampRate = voltage
+
+    def setStepVoltage(self, voltage: volts) -> None:
+        self.sys_id_routine.config.stepVoltage = voltage

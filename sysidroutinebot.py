@@ -55,26 +55,29 @@ class SysIdRoutineBot:
         self.turret.setDefaultCommand(self.turret.defaultCommand())
 
         def bindSysId(subsystem: SysidSubsystem, pov: Trigger):
-            (pov & self.controller.a()).whileTrue(
-                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward).onlyWhile(
-                    subsystem.beforePositiveLimit
-                )
-            )
-            (pov & self.controller.b()).whileTrue(
-                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).onlyWhile(
-                    subsystem.beforeNegativeLimit
-                )
-            )
-            (pov & self.controller.x()).whileTrue(
-                subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward).onlyWhile(
-                    subsystem.beforePositiveLimit
-                )
-            )
-            (pov & self.controller.y()).whileTrue(
-                subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse).onlyWhile(
-                    subsystem.beforeNegativeLimit
-                )
-            )
+            (
+                pov
+                & self.controller.a()
+                & Trigger(lambda: not subsystem.atPositiveLimit())
+            ).whileTrue(subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward))
+
+            (
+                pov
+                & self.controller.b()
+                & Trigger(lambda: not subsystem.atNegativeLimit())
+            ).whileTrue(subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse))
+
+            (
+                pov
+                & self.controller.x()
+                & Trigger(lambda: not subsystem.atPositiveLimit())
+            ).whileTrue(subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward))
+
+            (
+                pov
+                & self.controller.y()
+                & Trigger(lambda: not subsystem.atNegativeLimit())
+            ).whileTrue(subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse))
 
         bindSysId(self.swerve_drive, self.controller.rightBumper())
         bindSysId(self.flywheel, self.controller.leftBumper())

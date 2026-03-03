@@ -78,9 +78,9 @@ class TalonTurret(SysidSubsystem):
         )
 
     @typing.override
-    def beforePositiveLimit(self) -> bool:
-        return self.motor.get_position().value < self.positive_limit
+    def atPositiveLimit(self) -> bool:
+        return self.motor.get_position().value >= self.positive_limit
 
     @typing.override
-    def beforeNegativeLimit(self) -> bool:
-        return self.motor.get_position().value > self.negative_limit
+    def atNegativeLimit(self) -> bool:
+        return self.motor.get_position().value <= self.negative_limit

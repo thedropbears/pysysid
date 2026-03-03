@@ -43,13 +43,21 @@ class SysidSubsystem(Subsystem):
         return self.run(lambda: None)
 
     def sysIdQuasistatic(self, direction: SysIdRoutine.Direction) -> Command:
-        return self.sys_id_routine.quasistatic(direction)
+        return self.sys_id_routine.quasistatic(direction).until(
+            self.atPositiveLimit
+            if direction == SysIdRoutine.Direction.kForward
+            else self.atNegativeLimit
+        )
 
-    def beforePositiveLimit(self) -> bool:
-        return True
+    def atPositiveLimit(self) -> bool:
+        return False
 
-    def beforeNegativeLimit(self) -> bool:
-        return True
+    def atNegativeLimit(self) -> bool:
+        return False
 
     def sysIdDynamic(self, direction: SysIdRoutine.Direction) -> Command:
-        return self.sys_id_routine.dynamic(direction)
+        return self.sys_id_routine.dynamic(direction).until(
+            self.atPositiveLimit
+            if direction == SysIdRoutine.Direction.kForward
+            else self.atNegativeLimit
+        )

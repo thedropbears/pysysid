@@ -60,7 +60,7 @@ class SysIdRoutineBot:
                 pov
                 & self.controller.a()
                 & Trigger(lambda: not subsystem.atPositiveLimit())
-            ).whileTrue(
+            ).onTrue(
                 DeferredCommand(
                     lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward),
                     subsystem,
@@ -71,7 +71,7 @@ class SysIdRoutineBot:
                 pov
                 & self.controller.b()
                 & Trigger(lambda: not subsystem.atNegativeLimit())
-            ).whileTrue(
+            ).onTrue(
                 DeferredCommand(
                     lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
                     subsystem,
@@ -82,7 +82,7 @@ class SysIdRoutineBot:
                 pov
                 & self.controller.x()
                 & Trigger(lambda: not subsystem.atPositiveLimit())
-            ).whileTrue(
+            ).onTrue(
                 DeferredCommand(
                     lambda: subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward),
                     subsystem,
@@ -93,7 +93,7 @@ class SysIdRoutineBot:
                 pov
                 & self.controller.y()
                 & Trigger(lambda: not subsystem.atNegativeLimit())
-            ).whileTrue(
+            ).onTrue(
                 DeferredCommand(
                     lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
                     subsystem,

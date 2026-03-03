@@ -38,7 +38,7 @@ class SparkIds(enum.IntEnum):
 @enum.unique
 class DioChannel(enum.IntEnum):
     TURRET_ENCODER = 1
-    INTAKE_DEPLOYER_ENCODER = 2
+    INTAKE_DEPLOYER_ENCODER = 7
 
 
 class OIConstants:

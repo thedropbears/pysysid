@@ -6,7 +6,6 @@ from sysidroutinebot import SysIdRoutineBot
 
 
 class MyRobot(TimedCommandRobot):
-
     def robotInit(self) -> None:
         self.robot = SysIdRoutineBot()
 
@@ -17,7 +16,4 @@ class MyRobot(TimedCommandRobot):
         CommandScheduler.getInstance().cancelAll()
 
     def disabledPeriodic(self) -> None:
-        self.robot.talon_arm.arm_motor.set_position(
-            self.robot.talon_arm.absolute_encoder.get()
-            - self.robot.talon_arm.encoder_offset
-        )
+        self.robot.talon_arm.sync_encoders()

@@ -1,6 +1,7 @@
 import math
 
 import phoenix6
+from commands2 import DeferredCommand
 from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
 from wpilib import DutyCycleEncoder
@@ -53,12 +54,12 @@ class SysIdRoutineBot:
             phoenix6.hardware.TalonFX(TalonIds.INTAKE_DEPLOYER_LEFT),
             (phoenix6.hardware.TalonFX(TalonIds.INTAKE_DEPLOYER_RIGHT), True),
             invert_motor=False,
-            motor_to_mechanism_gearing=1 / (((1 / 5) * (26 / 50)) * math.tau),
+            motor_to_mechanism_gearing=1 / ((1 / 5) * (26 / 50)),
             absolute_encoder=DutyCycleEncoder(
                 DioChannel.INTAKE_DEPLOYER_ENCODER, math.tau, 0
             ),
-            encoder_offset=3.419406,
-            positive_limit=math.radians(120),
+            encoder_offset=2.390786,
+            positive_limit=math.radians(114),
             negative_limit=math.radians(0),
         )
 
@@ -70,24 +71,39 @@ class SysIdRoutineBot:
         self.turret.setDefaultCommand(self.turret.defaultCommand())
 
         def bindSysId(subsystem: SysidSubsystem, pov: Trigger):
-            (pov & self.controller.a()).whileTrue(
-                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward).onlyWhile(
-                    subsystem.beforePositiveLimit
+            (pov & self.controller.a() & subsystem.beforePositiveLimit).onTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdQuasistatic(
+                        SysIdRoutine.Direction.kForward
+                    ).until(lambda: not subsystem.beforePositiveLimit()),
+                    subsystem,
                 )
             )
-            (pov & self.controller.b()).whileTrue(
-                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).onlyWhile(
-                    subsystem.beforeNegativeLimit
+
+            (pov & self.controller.b() & subsystem.beforeNegativeLimit).onTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdQuasistatic(
+                        SysIdRoutine.Direction.kReverse
+                    ).until(lambda: not subsystem.beforeNegativeLimit()),
+                    subsystem,
                 )
             )
-            (pov & self.controller.x()).whileTrue(
-                subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward).onlyWhile(
-                    subsystem.beforePositiveLimit
+
+            (pov & self.controller.x() & subsystem.beforePositiveLimit).onTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdDynamic(
+                        SysIdRoutine.Direction.kForward
+                    ).until(lambda: not subsystem.beforePositiveLimit()),
+                    subsystem,
                 )
             )
-            (pov & self.controller.y()).whileTrue(
-                subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse).onlyWhile(
-                    subsystem.beforeNegativeLimit
+
+            (pov & self.controller.y() & subsystem.beforeNegativeLimit).onTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdDynamic(
+                        SysIdRoutine.Direction.kReverse
+                    ).until(lambda: not subsystem.beforeNegativeLimit()),
+                    subsystem,
                 )
             )
 

@@ -4,6 +4,8 @@ from phoenix6 import SignalLogger
 from wpilib import sysid
 from wpimath.units import seconds, volts
 
+volts_per_second = float
+
 
 class SysidSubsystem(Subsystem):
     logger_inited = False
@@ -43,13 +45,27 @@ class SysidSubsystem(Subsystem):
         return self.run(lambda: None)
 
     def sysIdQuasistatic(self, direction: SysIdRoutine.Direction) -> Command:
-        return self.sys_id_routine.quasistatic(direction)
+        return self.sys_id_routine.quasistatic(direction).until(
+            self.atPositiveLimit
+            if direction == SysIdRoutine.Direction.kForward
+            else self.atNegativeLimit
+        )
 
-    def beforePositiveLimit(self) -> bool:
-        return True
+    def atPositiveLimit(self) -> bool:
+        return False
 
-    def beforeNegativeLimit(self) -> bool:
-        return True
+    def atNegativeLimit(self) -> bool:
+        return False
 
     def sysIdDynamic(self, direction: SysIdRoutine.Direction) -> Command:
-        return self.sys_id_routine.dynamic(direction)
+        return self.sys_id_routine.dynamic(direction).until(
+            self.atPositiveLimit
+            if direction == SysIdRoutine.Direction.kForward
+            else self.atNegativeLimit
+        )
+
+    def setRampRate(self, voltage: volts_per_second) -> None:
+        self.sys_id_routine.config.rampRate = voltage
+
+    def setStepVoltage(self, voltage: volts) -> None:
+        self.sys_id_routine.config.stepVoltage = voltage

@@ -1,6 +1,7 @@
 import math
 
 import phoenix6
+from commands2 import DeferredCommand
 from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
 
@@ -55,24 +56,47 @@ class SysIdRoutineBot:
         self.turret.setDefaultCommand(self.turret.defaultCommand())
 
         def bindSysId(subsystem: SysidSubsystem, pov: Trigger):
-            (pov & self.controller.a()).whileTrue(
-                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward).onlyWhile(
-                    subsystem.beforePositiveLimit
+            (
+                pov
+                & self.controller.a()
+                & Trigger(lambda: not subsystem.atPositiveLimit())
+            ).onTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward),
+                    subsystem,
                 )
             )
-            (pov & self.controller.b()).whileTrue(
-                subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).onlyWhile(
-                    subsystem.beforeNegativeLimit
+
+            (
+                pov
+                & self.controller.b()
+                & Trigger(lambda: not subsystem.atNegativeLimit())
+            ).onTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
+                    subsystem,
                 )
             )
-            (pov & self.controller.x()).whileTrue(
-                subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward).onlyWhile(
-                    subsystem.beforePositiveLimit
+
+            (
+                pov
+                & self.controller.x()
+                & Trigger(lambda: not subsystem.atPositiveLimit())
+            ).onTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdDynamic(SysIdRoutine.Direction.kForward),
+                    subsystem,
                 )
             )
-            (pov & self.controller.y()).whileTrue(
-                subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse).onlyWhile(
-                    subsystem.beforeNegativeLimit
+
+            (
+                pov
+                & self.controller.y()
+                & Trigger(lambda: not subsystem.atNegativeLimit())
+            ).onTrue(
+                DeferredCommand(
+                    lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
+                    subsystem,
                 )
             )
 

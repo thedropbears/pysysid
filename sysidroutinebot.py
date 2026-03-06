@@ -27,7 +27,7 @@ class SysIdRoutineBot:
         self.flywheel = FXS_Flywheel(
             phoenix6.hardware.TalonFXS(TalonIds.INTAKE),
             phoenix6.signals.MotorArrangementValue.MINION_JST,
-            gearing=1 / (1 / 3),
+            gearing=1 / ((1 / 3) * (36 / 26)),
         )
 
         """self.flywheel = Flywheel(

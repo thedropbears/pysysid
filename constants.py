@@ -17,7 +17,7 @@ class TalonIds(enum.IntEnum):
 
     FLYWHEEL = 9
 
-    TURRET = 16
+    TURRET = 20
 
 
 @enum.unique
@@ -26,6 +26,8 @@ class CancoderIds(enum.IntEnum):
     SWERVE_RL = 2
     SWERVE_RR = 3
     SWERVE_FR = 4
+
+    TURRET = 6
 
 
 @enum.unique

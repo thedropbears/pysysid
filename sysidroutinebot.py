@@ -95,7 +95,7 @@ class SysIdRoutineBot:
                 & Trigger(lambda: not subsystem.atNegativeLimit())
             ).onTrue(
                 DeferredCommand(
-                    lambda: subsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
+                    lambda: subsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse),
                     subsystem,
                 )
             )

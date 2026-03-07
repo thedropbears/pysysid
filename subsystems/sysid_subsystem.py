@@ -41,6 +41,9 @@ class SysidSubsystem(Subsystem):
         )
         self.sys_id_routine.recordState(state)
 
+    def stopLogging(self) -> None:
+        SignalLogger.stop()
+
     def defaultCommand(self) -> Command:
         return self.run(lambda: None)
 

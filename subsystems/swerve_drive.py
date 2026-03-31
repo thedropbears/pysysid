@@ -87,10 +87,12 @@ class SwerveDrive(SysidSubsystem):
             ):
                 steer_pid = (
                     Slot0Configs()
-                    .with_k_p(92.079)
+                    .with_k_p(103.06)
                     .with_k_i(0)
-                    .with_k_d(1.6683)
-                    .with_k_s(0.086374)
+                    .with_k_d(1.0525)
+                    .with_k_s(0.17771)
+                    .with_k_v(2.5106)
+                    .with_k_a(0.028466)
                 )
             steer_gear_ratio_config = FeedbackConfigs().with_sensor_to_mechanism_ratio(
                 1 / self.STEER_GEAR_RATIO

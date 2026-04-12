@@ -18,4 +18,4 @@ class MyRobot(TimedCommandRobot):
         CommandScheduler.getInstance().cancelAll()
 
     def disabledInit(self) -> None:
-        SysidSubsystem().stopLogging()
+        SysidSubsystem.stopLogging()

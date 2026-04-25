@@ -1,22 +1,34 @@
 import typing
 
 import phoenix6
-from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, TalonFXConfiguration
+from phoenix6.configs import (
+    CommutationConfigs,
+    ExternalFeedbackConfigs,
+    FeedbackConfigs,
+    MotorOutputConfigs,
+    TalonFXConfiguration,
+    TalonFXSConfiguration,
+)
 from phoenix6.controls import Follower, VoltageOut
-from phoenix6.signals import MotorAlignmentValue, NeutralModeValue
+from phoenix6.signals import (
+    MotorAlignmentValue,
+    MotorArrangementValue,
+    NeutralModeValue,
+)
 from wpilib import sysid
 from wpimath.units import volts
 
 from subsystems.sysid_subsystem import SysidSubsystem
 
-FollowerDescriptor = tuple[phoenix6.hardware.TalonFX, bool]
+FXFollowerDescriptor = tuple[phoenix6.hardware.TalonFX, bool]
+FXSFollowerDescriptor = tuple[phoenix6.hardware.TalonFXS, bool]
 
 
-class Flywheel(SysidSubsystem):
+class FXFlywheel(SysidSubsystem):
     def __init__(
         self,
         flywheel_motor: phoenix6.hardware.TalonFX,
-        *followers: FollowerDescriptor,
+        *followers: FXFollowerDescriptor,
         gearing: float,
         name: str | None = None,
     ) -> None:
@@ -42,6 +54,80 @@ class Flywheel(SysidSubsystem):
                 TalonFXConfiguration()
                 .with_motor_output(flywheel_motor_config)
                 .with_feedback(feedback_config)
+            )
+            motor.set_control(
+                Follower(
+                    self.flywheel.device_id,
+                    (
+                        MotorAlignmentValue.OPPOSED
+                        if oppose_leader
+                        else MotorAlignmentValue.ALIGNED
+                    ),
+                )
+            )
+
+    # Tell SysId how to plumb the driving voltage to the motors.
+    @typing.override
+    def drive(self, voltage: volts) -> None:
+        self.flywheel.set_control(VoltageOut(voltage))
+
+    # Tell SysId how to record a frame of data for each motor on the mechanism being
+    # characterized.
+    @typing.override
+    def log(self, sys_id_routine: sysid.SysIdRoutineLog) -> None:
+        (
+            sys_id_routine.motor("leader")
+            .voltage(self.flywheel.get_motor_voltage().value)
+            .position(self.flywheel.get_position().value)
+            .velocity(self.flywheel.get_velocity().value)
+        )
+        for motor in self.followers:
+            (
+                sys_id_routine.motor(f"follower-{motor.device_id}")
+                .voltage(motor.get_motor_voltage().value)
+                .position(motor.get_position().value)
+                .velocity(motor.get_velocity().value)
+            )
+
+
+class FXSFlywheel(SysidSubsystem):
+    def __init__(
+        self,
+        flywheel_motor: phoenix6.hardware.TalonFXS,
+        commutation: MotorArrangementValue,
+        *followers: FXSFollowerDescriptor,
+        gearing: float,
+        name: str | None = None,
+    ) -> None:
+        super().__init__()
+        self.flywheel = flywheel_motor
+        self.followers = [motor for motor, _ in followers]
+        if name is not None:
+            self.setName(name)
+
+        flywheel_motor_config = MotorOutputConfigs()
+        flywheel_motor_config.neutral_mode = NeutralModeValue.COAST
+        flywheel_commutation_config = CommutationConfigs().with_motor_arrangement(
+            commutation
+        )
+        feedback_config = ExternalFeedbackConfigs().with_sensor_to_mechanism_ratio(
+            gearing
+        )
+
+        flywheel_config = self.flywheel.configurator
+        flywheel_config.apply(
+            TalonFXSConfiguration()
+            .with_external_feedback(feedback_config)
+            .with_motor_output(flywheel_motor_config)
+            .with_commutation(flywheel_commutation_config)
+        )
+
+        for motor, oppose_leader in followers:
+            motor.configurator.apply(
+                TalonFXSConfiguration()
+                .with_motor_output(flywheel_motor_config)
+                .with_external_feedback(feedback_config)
+                .with_commutation(flywheel_commutation_config)
             )
             motor.set_control(
                 Follower(

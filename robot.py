@@ -1,4 +1,3 @@
-import urcl
 import wpilib
 from commands2 import CommandScheduler, TimedCommandRobot
 
@@ -12,7 +11,6 @@ class MyRobot(TimedCommandRobot):
         self.robot = SysIdRoutineBot()
 
         self.robot.configureBindings()
-        urcl.URCL.start(wpilib.DataLogManager.getLog())
 
     def teleopInit(self) -> None:
         CommandScheduler.getInstance().cancelAll()

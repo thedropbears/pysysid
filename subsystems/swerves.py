@@ -7,8 +7,8 @@ from phoenix6.swerve.requests import (
 )
 from wpilib.sysid import SysIdRoutineLog
 
+from generated.comp import TunerConstants, TunerSwerveDrivetrain
 from subsystems.sysid_subsystem import SysidSubsystem
-from swerves.tuner_constants import TunerConstants, TunerSwerveDrivetrain
 
 
 class Swerves(SysidSubsystem, TunerSwerveDrivetrain):

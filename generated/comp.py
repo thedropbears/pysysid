@@ -1,7 +1,6 @@
 from typing import overload
 
 from phoenix6 import CANBus, configs, hardware, signals, swerve, units
-from wpimath.units import inchesToMeters
 
 
 class TunerConstants:
@@ -16,16 +15,17 @@ class TunerConstants:
     # output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     _steer_gains = (
         configs.Slot0Configs()
-        .with_k_p(100)
+        .with_k_p(1.0293)
         .with_k_i(0)
-        .with_k_d(0.5)
-        .with_k_s(0.1)
-        .with_k_v(2.33)
-        .with_k_a(0)
+        .with_k_d(0.00053113)
+        .with_k_s(0.1754)
+        .with_k_v(2.1226)
+        .with_k_a(0.10722)
         .with_static_feedforward_sign(
             signals.StaticFeedforwardSignValue.USE_CLOSED_LOOP_SIGN
         )
     )
+
     # When using closed-loop control, the drive motor uses the control
     # output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     _drive_gains = (
@@ -51,7 +51,7 @@ class TunerConstants:
 
     # The remote sensor feedback type to use for the steer motors;
     # When not Pro-licensed, Fused*/Sync* automatically fall back to Remote*
-    _steer_feedback_type = swerve.SteerFeedbackType.FUSED_CANCODER
+    _steer_feedback_type = swerve.SteerFeedbackType.REMOTE_CANCODER
 
     # The stator current at which the wheels start to slip;
     # This needs to be tuned to your individual robot
@@ -66,6 +66,7 @@ class TunerConstants:
         # stator current limit to help avoid brownouts without impacting performance.
         .with_stator_current_limit(60.0).with_stator_current_limit_enable(True)
     )
+
     _encoder_initial_configs = configs.CANcoderConfiguration()
     # Configs for the Pigeon 2; leave this None to skip applying Pigeon 2 configs
     _pigeon_configs: configs.Pigeon2Configuration | None = None
@@ -84,7 +85,7 @@ class TunerConstants:
 
     _drive_gear_ratio = 5.902777777777778
     _steer_gear_ratio = 18.75
-    _wheel_radius: units.meter = inchesToMeters(2)
+    _wheel_radius: units.meter = 0.0508
 
     _invert_left_side = False
     _invert_right_side = True
@@ -141,8 +142,8 @@ class TunerConstants:
     _front_left_steer_motor_inverted = True
     _front_left_encoder_inverted = False
 
-    _front_left_x_pos: units.meter = inchesToMeters(10.1771655)
-    _front_left_y_pos: units.meter = inchesToMeters(10.1771655)
+    _front_left_x_pos: units.meter = 0.2585
+    _front_left_y_pos: units.meter = 0.2585
 
     # Front Right
     _front_right_drive_motor_id = 4
@@ -152,8 +153,8 @@ class TunerConstants:
     _front_right_steer_motor_inverted = True
     _front_right_encoder_inverted = False
 
-    _front_right_x_pos: units.meter = inchesToMeters(10.1771655)
-    _front_right_y_pos: units.meter = inchesToMeters(-10.1771655)
+    _front_right_x_pos: units.meter = 0.2585
+    _front_right_y_pos: units.meter = -0.2585
 
     # Back Left
     _back_left_drive_motor_id = 2
@@ -163,8 +164,8 @@ class TunerConstants:
     _back_left_steer_motor_inverted = True
     _back_left_encoder_inverted = False
 
-    _back_left_x_pos: units.meter = inchesToMeters(-10.1771655)
-    _back_left_y_pos: units.meter = inchesToMeters(10.1771655)
+    _back_left_x_pos: units.meter = -0.2585
+    _back_left_y_pos: units.meter = 0.2585
 
     # Back Right
     _back_right_drive_motor_id = 3
@@ -174,8 +175,8 @@ class TunerConstants:
     _back_right_steer_motor_inverted = True
     _back_right_encoder_inverted = False
 
-    _back_right_x_pos: units.meter = inchesToMeters(-10.1771655)
-    _back_right_y_pos: units.meter = inchesToMeters(-10.1771655)
+    _back_right_x_pos: units.meter = -0.2585
+    _back_right_y_pos: units.meter = -0.2585
 
     front_left = _constants_creator.create_module_constants(
         _front_left_steer_motor_id,

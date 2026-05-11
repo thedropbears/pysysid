@@ -16,7 +16,7 @@ class Swerves(SysidSubsystem, TunerSwerveDrivetrain):
     def __init__(
         self,
     ) -> None:
-        SysidSubsystem.__init__(self, step_voltage=4)
+        SysidSubsystem.__init__(self, step_voltage=2.5, timeout=4)
 
         tuner_constants = TunerConstants()
         modules = [
@@ -34,7 +34,7 @@ class Swerves(SysidSubsystem, TunerSwerveDrivetrain):
         self.steer_routine = SysIdSwerveSteerGains()
         self.heading_routine = SysIdSwerveRotation()
 
-        self.chosen_routine = self.steer_routine
+        self.chosen_routine = self.drive_routine
 
     @override
     def drive(self, voltage: float) -> None:

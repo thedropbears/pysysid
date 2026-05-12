@@ -17,6 +17,8 @@ class TalonIds(enum.IntEnum):
 
     FLYWHEEL = 9
 
+    INTAKE = 15
+
     TURRET = 20
 
 

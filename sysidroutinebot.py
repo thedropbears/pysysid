@@ -6,7 +6,7 @@ from commands2.button import CommandXboxController, Trigger
 from commands2.sysid import SysIdRoutine
 
 from constants import CancoderIds, OIConstants, TalonIds
-from subsystems.flywheel import Flywheel
+from subsystems.flywheel import FXSFlywheel
 from subsystems.swerve_drive import SwerveDrive
 from subsystems.sysid_subsystem import SysidSubsystem
 from subsystems.talon_turret import TalonTurret
@@ -24,10 +24,16 @@ class SysIdRoutineBot:
         #  - swerve steer
         # if using a swerve steer make sure to comment out references to the drive
         # system to avoid double motor initialisation
-        self.flywheel = Flywheel(
-            phoenix6.hardware.TalonFX(TalonIds.FLYWHEEL),
-            gearing=1 / ((14 / 50) * (10 / 60)),
+        self.flywheel = FXSFlywheel(
+            phoenix6.hardware.TalonFXS(TalonIds.INTAKE),
+            phoenix6.signals.MotorArrangementValue.MINION_JST,
+            gearing=1 / ((1 / 3) * (36 / 26)),
         )
+
+        """self.flywheel = Flywheel(
+            phoenix6.hardware.TalonFXS(TalonIds.FLYWHEEL),
+            gearing=1 / ((14 / 50) * (10 / 60)),
+        """
 
         """self.turret = RevTurret(
             SparkMax(SparkIds.TURRET, SparkMax.MotorType.kBrushless),

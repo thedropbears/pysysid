@@ -3,7 +3,7 @@ import typing
 import phoenix6
 from phoenix6.configs import FeedbackConfigs, MotorOutputConfigs, TalonFXConfiguration
 from phoenix6.controls import Follower, VoltageOut
-from phoenix6.signals import MotorAlignmentValue, NeutralModeValue
+from phoenix6.signals import NeutralModeValue
 from wpilib import sysid
 from wpimath.units import volts
 

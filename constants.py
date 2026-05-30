@@ -17,6 +17,9 @@ class TalonIds(enum.IntEnum):
 
     FLYWHEEL = 9
 
+    INDEXER = 14
+    INJECTOR = 18
+
     TURRET = 20
 
 
